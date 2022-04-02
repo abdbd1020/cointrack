@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../component/drawerUI.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage() : super();
 
@@ -35,14 +37,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: MainDrawer(),
       appBar: AppBar(
         elevation: 1,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'HOME',
           style: TextStyle(color: Colors.white),
         ),
       ),
+      body: buildBody(),
+
     );
   }
 
