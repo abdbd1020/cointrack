@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:swe/controller/accountController.dart';
 import 'package:swe/pages/homePage.dart';
 import 'package:swe/pages/loginPage.dart';
-import 'package:swe/router.dart';
+import 'package:swe/controller/accountController.dart';
 
 
 class App extends StatefulWidget {
@@ -22,12 +25,16 @@ class _AppSate extends State<App> {
   void initState() {
     super.initState();
     initProject();
+
   }
 
   void initProject() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLogin', true);
-    isLogin = prefs.getBool('isLogin')!;
+    isLogin = prefs.getBool('isLogin');
+    WidgetsFlutterBinding.ensureInitialized();
+    AccountController().createDatabase();
+
   }
 
 

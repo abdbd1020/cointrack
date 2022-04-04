@@ -41,12 +41,12 @@ final Map<String, RouterMethod> _definitions = {
 
 
 
-Map<String, String>? _buildParams(String key, String? name) {
+Map<String, String> _buildParams(String key, String name) {
   final uri = Uri.parse(key);
   final path = uri.pathSegments;
   final params = Map<String, String>.from(uri.queryParameters);
 
-  final instance = Uri.parse(name!).pathSegments;
+  final instance = Uri.parse(name).pathSegments;
   if (instance.length != path.length) {
     return null;
   }
@@ -109,8 +109,8 @@ class FadeInRoute<T> extends MaterialPageRoute<T> {
   bool disableAnimation;
 
   FadeInRoute({
-    required WidgetBuilder builder,
-    RouteSettings? settings,
+    WidgetBuilder builder,
+    RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
     this.disableAnimation = false,
