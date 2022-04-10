@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swe/controller/accountController.dart';
-import 'package:swe/modal/account.dart';
+import 'package:swe/model/account.dart';
+import 'package:swe/pages/accountsPage.dart';
 
 import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
@@ -17,6 +21,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool isLoading = false;
+  List<Account> accounts;
   List<Student> students = [
     Student(name: "Bkash", rollno: 160),
     Student(name: "DBBL", rollno: 0.0),
@@ -24,13 +30,25 @@ class _HomePageState extends State<HomePage> {
     Student(name: "Rocket", rollno: 5644)
   ];
 
-
   int a = 0;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    refreshNotes();
+  }
+
+  Future refreshNotes() async {
+    setState(() => isLoading = true);
+    this.accounts = await AccountController.instance.readAllAccounts();
+
+
+   // Account b = await AccountController.instance.create(fido);
+
+
+
+    setState(() => isLoading = false);
   }
 
   @override
@@ -80,41 +98,57 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(0.0)),
                     elevation: 3,
                     clipBehavior: Clip.antiAlias, // Add This
-                    child:Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(left: 5, bottom: 0, right: 5, top: 0),
-                      child:  ListView.builder(
-                        padding: EdgeInsets.all(0),
-                        itemCount: students.length,
-                        itemBuilder: (context, int index) {
-                          return index >= students.length
-                              ? Container()
-                              : AccountCard(name: students[index].name, amount : students[index].rollno);
-                        },
+
+                        child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        padding:
+                            EdgeInsets.only(left: 5, bottom: 0, right: 5, top: 0),
+                        child: isLoading
+                            ? CircularProgressIndicator()
+                            : accounts==null
+                                ? const Text(
+                                    'No database',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 24),
+                                  )
+                        : accounts.isEmpty?const Text(
+                          'No Accounts',
+                          style: TextStyle(
+                              color: Colors.black, fontSize: 24),
+                        )
+
+                          : ListView.builder(
+                                    padding: EdgeInsets.all(0),
+                                    itemCount: accounts.length,
+                                    itemBuilder: (context, int index) {
+                                      return index >= accounts.length
+                                          ? Container()
+                                          : AccountCard(
+                                              name: accounts[index].name,
+                                              amount: accounts[index].amount.toDouble());
+                                    },
+                                  ),
                       ),
-                    ),
+
                   ),
                 ),
                 Container(
-                  color: Colors.white,
-                  width: double.infinity,
-                  height: 50,
-                  child: Material(
-                    shadowColor: Colors.grey[100]?.withOpacity(0.4),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0.0)),
-                    elevation: 3,
-                    clipBehavior: Clip.antiAlias, // Add This
-                    child:
-                    Container (
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.only(left: 50, bottom: 0, right: 50, top: 0),
-                        child:  buildViewDetailsButton(context)
-                    )
-                  )
-                )
+                    color: Colors.white,
+                    width: double.infinity,
+                    height: 50,
+                    child: Material(
+                        shadowColor: Colors.grey[100]?.withOpacity(0.4),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0.0)),
+                        elevation: 3,
+                        clipBehavior: Clip.antiAlias, // Add This
+                        child: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                                left: 50, bottom: 0, right: 50, top: 0),
+                            child: buildViewDetailsButton(context))))
               ],
             ),
           ),
@@ -146,6 +180,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildViewDetailsButton(BuildContext context) {
+    print("Ffffas");
     return GeneralActionButton(
       title: 'Manage Accounts',
       height: 40,
@@ -153,6 +188,7 @@ class _HomePageState extends State<HomePage> {
       textColor: Colors.white,
       showNextIcon: false,
       color: Colors.red,
+      isProcessing: false,
       padding: EdgeInsets.all(0),
       callBackOnSubmit: doChange,
     );
@@ -163,34 +199,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> doChange() async {
-    if (a == 0) {
-      a = 1;
-      var fido = const Account(
-        id: 0,
-        name: 'Fido',
-        amount: 35,
-        type: "cash",
+    print("FDgdfg");
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DailyPage()),
       );
 
-      await AccountController().insertDog(fido);
-    } else {
-      a = 0;
-      String m = await AccountController().dogs().toString();
-      Fluttertoast.showToast(
-          msg: m,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
+
+
+    // a = 1;
+    //   var fido = const Account(
+    //     id: 11,
+    //     name: 'Fido',
+    //     amount: 35,
+    //     type: "cash",
+    //   );
+    //
+    //   Account b = await AccountController.instance.create(fido);
+
+
+
   }
 }
-class Student{
+
+class Student {
   String name;
   double rollno;
 
-  Student({ this.name,  this.rollno});
+  Student({this.name, this.rollno});
 }
-

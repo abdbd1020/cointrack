@@ -33,7 +33,6 @@ class _AppSate extends State<App> {
     await prefs.setBool('isLogin', true);
     isLogin = prefs.getBool('isLogin');
     WidgetsFlutterBinding.ensureInitialized();
-    AccountController().createDatabase();
 
   }
 
