@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/homePage.dart';
+
 class MainDrawer extends StatelessWidget {
   static const MainDrawer _drawer = MainDrawer._internal();
 
@@ -31,6 +33,20 @@ class MainDrawer extends StatelessWidget {
 
               ),
               const SizedBox(height: 5),
+              ListTile(
+                  title: const Text(
+                    'Home',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  leading: const Icon(
+                    Icons.directions_car,
+                    color: Colors.black,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );                  }),
               ListTile(
                   title: const Text(
                     'BOOKING HISTORY',

@@ -23,14 +23,14 @@ class AccountController {
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = 'INTEGER PRIMARY KEY';
+    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     final textType = 'TEXT NOT NULL';
     final integerType = 'INTEGER NOT NULL';
     final doubleType = 'REAL NOT NULL';
 
     await db.execute('''
 CREATE TABLE Accounts ( 
-  id $integerType, 
+  id $idType, 
   name $textType,
   amount $integerType,
   type $textType
@@ -106,7 +106,12 @@ CREATE TABLE Accounts (
       whereArgs: [id],
     );
   }
+  Future<int> deleteAll() async {
+    final db = await instance.database;
 
+    return await   db.delete("Accounts");
+
+  }
   Future close() async {
     final db = await instance.database;
 

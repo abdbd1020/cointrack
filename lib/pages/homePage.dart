@@ -26,12 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool isLoading = false;
   List<Account> accounts;
-  List<Student> students = [
-    Student(name: "Bkash", rollno: 160),
-    Student(name: "DBBL", rollno: 0.0),
-    Student(name: "MTB", rollno: 3600),
-    Student(name: "Rocket", rollno: 5644)
-  ];
+
 
   int a = 0;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -129,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                                           ? Container()
                                           : AccountCard(
                                               name: accounts[index].name,
-                                              amount: accounts[index].amount.toDouble());
+                                              amount: accounts[index].id.toDouble());
                                     },
                                   ),
                       ),
@@ -206,20 +201,21 @@ class _HomePageState extends State<HomePage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BudgetPage()),
+        MaterialPageRoute(builder: (context) => AccountsPage()),
       );
 
 
 
     // a = 1;
+    //   await AccountController.instance.deleteAll();
     //   var fido = const Account(
-    //     id: 11,
-    //     name: 'Fido',
-    //     amount: 35,
+    //     id: 2,
+    //     name: 'Rocket',
+    //     amount: 501,
     //     type: "cash",
     //   );
-    //
-    //   Account b = await AccountController.instance.create(fido);
+
+      // Account b = await AccountController.instance.create(fido);
 
 
 
