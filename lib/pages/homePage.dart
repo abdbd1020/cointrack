@@ -7,11 +7,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swe/controller/accountController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/pages/accountsPage.dart';
+import 'package:swe/pages/statPage.dart';
 
 import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
 import '../component/drawerUI.dart';
 import '../component/generalActionButton.dart';
+import 'addEditTransactionPage.dart';
+import 'lendBorrowPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage() : super();
@@ -203,7 +206,7 @@ class _HomePageState extends State<HomePage> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DailyPage()),
+        MaterialPageRoute(builder: (context) => BudgetPage()),
       );
 
 
