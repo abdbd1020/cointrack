@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../Misc/Strings.dart';
 import '../Misc/colors.dart';
-import '../component/appBarBackButton.dart';
+import '../component/buttons/appBarBackButton.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
 import 'accountsPage.dart';
@@ -50,7 +50,15 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
                 'Edit Account',
                 style: TextStyle(color: Colors.white),
               ),
+        actions: [account!=null?AppBarDeleteButton():TextButton(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          ),
+          onPressed: () { },
+          child: Text(''),
+        )],
       ),
+
       backgroundColor: white.withOpacity(0.95),
       floatingActionButton: Container(
         decoration: BoxDecoration(
@@ -224,6 +232,7 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
         content: Text("Account Name is needed"),
         duration: Duration(milliseconds: 500),
       ));
+      return;
     }
     if(accountAmountController.text==""){
 
@@ -262,10 +271,29 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
       content: Text("Successful"),
       duration: Duration(milliseconds: 500),
     ));
+    Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AccountsPage()),
     );
 
+  }
+
+  AppBarDeleteButton() {
+    return IconButton(
+      icon: const Icon(
+        Icons.delete,
+        color: Colors.white,
+        size: 25,
+      ),
+      onPressed: () async {
+        await AccountController.instance.delete(account.id);
+        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AccountsPage()),
+        );
+      }
+    );
   }
 }

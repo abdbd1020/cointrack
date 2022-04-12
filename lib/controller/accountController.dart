@@ -37,6 +37,20 @@ CREATE TABLE Accounts (
 
   )
 ''');
+
+    await db.execute('''
+CREATE TABLE Transactions ( 
+  id $idType, 
+  AccountName $textType,
+  accountId $integerType,
+  amount $doubleType,
+  category $textType,
+  description $textType,
+  isIncome $integerType,
+  time $textType
+
+  )
+''');
   }
 
 

@@ -3,10 +3,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:swe/controller/transactionController.dart';
+import 'package:swe/model/transaction.dart';
 
 import '../Misc/colors.dart';
+import '../component/drawerUI.dart';
+import '../controller/accountController.dart';
+import '../model/account.dart';
 import '../model/daily.dart';
 import '../model/dayMonth.dart';
+import 'addEditTransactionPage.dart';
+import 'createEditAccountPage.dart';
 
 
 class HistoryPage extends StatefulWidget {
@@ -15,12 +22,83 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
+
+  bool isLoading = false;
+  List<Account> accounts;
+  List<TransactionModel> transactions = [];
+
+
+  int a = 0;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    refreshNotes();
+  }
+
+  Future refreshNotes() async {
+    setState(() => isLoading = true);
+    transactions = await TransactionController.instance.readAllRecords();
+    accounts = await AccountController.instance.readAllAccounts();
+
+
+    // Account b = await AccountController.instance.create(fido);
+
+
+
+    setState(() => isLoading = false);
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void refreshUI() {
+    if (mounted) {
+      setState(() {
+        _scaffoldKey = GlobalKey<ScaffoldState>();
+      });
+    }
+  }
   int activeDay = 3;
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: MainDrawer(),
+      appBar: AppBar(
+        elevation: 1,
+        centerTitle: true,
+        title:  const Text(
+
+          'Transaction',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       backgroundColor: white.withOpacity(0.95),
+
       body: getBody(),
+      floatingActionButton: SizedBox(
+        height: 80.0,
+        width: 80.0,
+        child: FittedBox(
+          child: FloatingActionButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddEditTransactionPage()),
+            );
+          },
+            child: const Icon(Icons.add),
+            backgroundColor: Colors.green,),
+        ),
+
+
+      ),
+
     );
   }
 
@@ -29,106 +107,31 @@ class _HistoryPageState extends State<HistoryPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(color: Colors.white, boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.01),
-                spreadRadius: 10,
-                blurRadius: 3,
-                // changes position of shadow
-              ),
-            ]),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 60, right: 20, left: 20, bottom: 25),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Daily Transaction",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                      Icon(AntDesign.search1)
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(days.length, (index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              activeDay = index;
-                            });
-                          },
-                          child: Container(
-                            width: (MediaQuery.of(context).size.width - 40) / 7,
-                            child: Column(
-                              children: [
-                                Text(
-                                  days[index]['label'],
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: activeDay == index
-                                          ? primary
-                                          : Colors.transparent,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: activeDay == index
-                                              ? primary
-                                              : black.withOpacity(0.1))),
-                                  child: Center(
-                                    child: Text(
-                                      days[index]['day'],
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                          color: activeDay == index
-                                              ? white
-                                              : black),
-                                    ),
-                                  ),
-                                )
-                              ],
+
+          const SizedBox(height: 20,),
+          Padding(
+
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+
+                children: List.generate(transactions.length, (index) {
+                  return Column(
+
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddEditTransactionPage(accounts: accounts,transaction: transactions[index]),
                             ),
-                          ),
-                        );
-                      }))
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Container(
+                          );
+                        },
 
-            child: Padding(
-
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-
-                  children: List.generate(daily.length, (index) {
-                    return Column(
-                      children: [
-                        Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
+                            SizedBox(
 
 
                               width: (size.width - 40) * 0.7,
@@ -143,50 +146,42 @@ class _HistoryPageState extends State<HistoryPage> {
                                     ),
                                     child: Center(
                                       child: Image.asset(
-                                        daily[index]['icon'],
+                                        "assets/images/bank.png",
                                         width: 30,
                                         height: 30,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 15),
-                                  Container(
+                                  const SizedBox(width: 15),
+                                  SizedBox(
                                     width: (size.width - 90) * 0.5,
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          daily[index]['name'],
-                                          style: TextStyle(
+                                          transactions[index].time,
+                                          style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          daily[index]['date'],
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: black.withOpacity(0.5),
-                                              fontWeight: FontWeight.w400),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+
                                       ],
                                     ),
                                   )
                                 ],
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               width: (size.width - 40) * 0.3,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    daily[index]['price'],
-                                    style: TextStyle(
+                                    transactions[index].amount.toString(),
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
                                         color: Colors.green),
@@ -196,25 +191,30 @@ class _HistoryPageState extends State<HistoryPage> {
                             )
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 65, top: 8),
-                          child: Divider(
-                            thickness: 0.8,
-                          ),
-                        )
-                      ],
-                    );
-                  })),
-            ),
+                      ),
+
+                      const Padding(
+                        padding: EdgeInsets.only(left: 65, top: 8),
+                        child: Divider(
+                          thickness: 0.8,
+                        ),
+
+                      ),
+                      const SizedBox(height:10),
+
+                    ],
+
+                  );
+                })),
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.only(right: 80),
                   child: Text(
@@ -226,9 +226,9 @@ class _HistoryPageState extends State<HistoryPage> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
+                const Spacer(),
+                const Padding(
+                  padding: EdgeInsets.only(top: 5),
                   child: Text(
                     "\$1780.00",
                     style: TextStyle(
@@ -245,4 +245,6 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
     );
   }
+
+
 }

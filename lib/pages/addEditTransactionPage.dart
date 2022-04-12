@@ -1,30 +1,103 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:intl/intl.dart';
+import 'package:swe/controller/transactionController.dart';
+import 'package:swe/model/transaction.dart';
 
-import '../Misc/categories.dart';
+import '../Misc/Strings.dart';
 import '../Misc/colors.dart';
+import '../component/buttons/appBarBackButton.dart';
+import '../controller/accountController.dart';
+import '../model/account.dart';
+import 'accountsPage.dart';
+import 'homePage.dart';
 
-class addEditTransactionPage extends StatefulWidget {
+
+class AddEditTransactionPage extends StatefulWidget {
+  const AddEditTransactionPage({Key key, this.transaction, this.accounts}) : super(key: key);
+  final TransactionModel transaction;
+  final List<Account> accounts;
+
   @override
-  _addEditTransactionPage createState() => _addEditTransactionPage();
+  _AddEditTransactionPage createState() => _AddEditTransactionPage(transaction,accounts);
 }
 
-class _addEditTransactionPage extends State<addEditTransactionPage> {
-  int activeCategory = 0;
-  TextEditingController _budgetName =
-  TextEditingController(text: "Grocery Budget");
-  TextEditingController _budgetPrice = TextEditingController(text: "\$1500.00");
+class _AddEditTransactionPage extends State<AddEditTransactionPage> {
+  TransactionModel transaction;
+  List<Account> accounts;
+  _AddEditTransactionPage(this.transaction,this.accounts);
+  String dropdownValue;
+  String dropdownTypeValue;
+  String dropdownCategoryValue;
+  Account selectedAccount;
+
+  TextEditingController descriptionConroller = TextEditingController();
+
+  TextEditingController accountAmountController = TextEditingController();
+  int transactionId=0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    descriptionConroller.text = "";
+    accountAmountController.text = accountAmount();
+    dropdownTypeValue = expenseString;
+    dropdownCategoryValue = foodAndDrinksString;
+    selectedAccount = accounts[0];
+
+
+
+   // dropdownValue = account == null ? cashString : account.type;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: AppBarBackButton(),
+        elevation: 1,
+        centerTitle: true,
+        title: transaction == null
+            ? const Text(
+          'Add Transaction',
+          style: TextStyle(color: Colors.white),
+        )
+            : const Text(
+          'Edit Transaction',
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [transaction!=null?AppBarDeleteButton():TextButton(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          ),
+          onPressed: () { },
+          child: Text(''),
+        )],
+      ),
+
       backgroundColor: white.withOpacity(0.95),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(15)),
+
+        height: 80.0,
+        width: 80.0,
+        child: FittedBox(
+          child: FloatingActionButton(onPressed: addEditAccount,
+            child: Icon( Icons.arrow_forward,
+              color: white,),
+            backgroundColor: Colors.red,),
+        ),
+
+
+      ),
       body: getBody(),
     );
   }
 
   Widget getBody() {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,186 +111,187 @@ class _addEditTransactionPage extends State<addEditTransactionPage> {
                 // changes position of shadow
               ),
             ]),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 60, right: 20, left: 20, bottom: 25),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Create budget",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: black),
-                      ),
-                      Row(
-                        children: [Icon(AntDesign.search1)],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-            child: Text(
-              "Choose category",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: black.withOpacity(0.5)),
-            ),
+          const SizedBox(
+            height: 10,
           ),
-          SizedBox(
-            height: 20,
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-                children: List.generate(categories.length, (index) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        activeCategory = index;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                      ),
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: 10,
-                        ),
-                        width: 150,
-                        height: 170,
-                        decoration: BoxDecoration(
-                            color: white,
-                            border: Border.all(
-                                width: 2,
-                                color: activeCategory == index
-                                    ? primary
-                                    : Colors.transparent),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: grey.withOpacity(0.01),
-                                spreadRadius: 10,
-                                blurRadius: 3,
-                                // changes position of shadow
-                              ),
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25, right: 25, top: 20, bottom: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: grey.withOpacity(0.15)),
-                                  child: Center(
-                                    child: Image.asset(
-                                      categories[index]['icon'],
-                                      width: 30,
-                                      height: 30,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  )),
-                              Text(
-                                categories[index]['name'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                })),
-          ),
-          SizedBox(
-            height: 50,
-          ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "budget name",
+
+                const Text(
+                  "Transaction type",
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
                       color: Color(0xff67727d)),
                 ),
-                TextField(
-                  controller: _budgetName,
-                  cursorColor: black,
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: dropdownTypeValue,
+                  isExpanded: true,
+
+                  // elevation: 5,
+                  iconEnabledColor: Colors.black,
+                  items: <String>[expenseString,incomeString]
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }).toList(),
+                  hint: const Text(
+                    "Please choose a type",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      dropdownTypeValue = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+                const Text(
+                  "Transaction account",
                   style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.bold, color: black),
-                  decoration: InputDecoration(
-                      hintText: "Enter Budget Name", border: InputBorder.none),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      color: Color(0xff67727d)),
                 ),
-                SizedBox(
-                  height: 20,
+                DropdownButton<Account>(
+                  focusColor: Colors.white,
+                  value: selectedAccount,
+                  isExpanded: true,
+
+                  // elevation: 5,
+                  iconEnabledColor: Colors.black,
+                  items: accounts?.map<DropdownMenuItem<Account>>((Account account) {
+                    return DropdownMenuItem<Account>(
+                      value: account,
+                      child: Text(account.name),
+                    );
+                  })?.toList(),
+                  hint: const Text(
+                    "Please choose an account",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  onChanged: (Account account) {
+                    setState(() {
+                      selectedAccount = account;
+                    });
+                  },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                const SizedBox(
+                  height: 10,
+                ),
+
+                DropdownButton<String>(
+                  focusColor: Colors.white,
+                  value: dropdownCategoryValue,
+                  isExpanded: true,
+
+                  // elevation: 5,
+                  iconEnabledColor: Colors.black,
+                  items: <String>[foodAndDrinksString,shoppingString,housingString,transportationString,groceriesString,othersString,incomeString,tuitionString,investmentString]
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    );
+                  }).toList(),
+                  hint: const Text(
+                    "Please choose a type",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  onChanged: (String value) {
+                    setState(() {
+                      dropdownCategoryValue = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: (size.width - 140),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Enter budget",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                                color: Color(0xff67727d)),
-                          ),
-                          TextField(
-                            controller: _budgetPrice,
-                            cursorColor: black,
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: black),
-                            decoration: InputDecoration(
-                                hintText: "Enter Budget",
-                                border: InputBorder.none),
-                          ),
-                        ],
-                      ),
+                    const Text(
+                      "Amount",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: Color(0xff67727d)),
                     ),
-                    SizedBox(
-                      width: 20,
+                    TextField(
+                      controller: accountAmountController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+
+                      cursorColor: black,
+                      style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: black),
+                      decoration: const InputDecoration(
+                          hintText: "Enter Amount",
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.black
+                              ))),
                     ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: primary,
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: white,
-                      ),
+                    const SizedBox(
+                      height: 10,
                     ),
+                    const Text(
+                      "Description",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: Color(0xff67727d)),
+                    ),
+                    TextField(
+                      controller: descriptionConroller,
+                      cursorColor: black,
+                      minLines: 1,
+                      maxLines: 4,
+                      style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: black),
+                      decoration: const InputDecoration(
+                          hintText: "Add description",
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.yellow
+                              ))),
+                    ),
+
                   ],
-                )
+                ),
+
+
               ],
             ),
           )
@@ -225,4 +299,100 @@ class _addEditTransactionPage extends State<addEditTransactionPage> {
       ),
     );
   }
+
+
+
+  String accountAmount() {
+    if (transaction == null) {
+      return "";
+    } else {
+      return transaction.amount.toString();
+    }
+  }
+
+  Future addEditAccount() async {
+
+    if(accountAmountController.text==""){
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Amount is needed"),
+        duration: Duration(milliseconds: 500),
+      ));
+      return;
+    }
+    if(transaction!=null){
+      transactionId = transaction.id;
+    }
+    else{
+      List<TransactionModel> transaction = await TransactionController.instance.readAllRecords();
+      int ans = -1;
+      for (var acc in transaction) {
+        if(ans<acc.id){
+          ans = acc.id;
+        }
+      }
+      ans++;
+      transactionId = ans;
+    }
+
+
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+    String formattedTime = formatter.format(now);
+    print(formattedTime); // something like 2013-04-20
+
+
+    int isIncomeInt = 0;
+    if(dropdownTypeValue==incomeString){
+      isIncomeInt = 1;
+    }
+    bool isUpdate = true;
+    if(transaction==null)isUpdate = false;
+    transaction =  TransactionModel(
+      id: transactionId,
+      accountName: selectedAccount.name,
+      accountId:selectedAccount.id ,
+      category:dropdownCategoryValue ,
+      isIncome: isIncomeInt,
+      description: descriptionConroller.text,
+      amount: double.parse(accountAmountController.text),
+      time: formattedTime
+    );
+    if(isUpdate){
+      await TransactionController.instance.update(transaction);
+    }
+    else{
+      await TransactionController.instance.create(transaction);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Successful"),
+      duration: Duration(milliseconds: 500),
+    ));
+    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+    );
+
+  }
+
+  AppBarDeleteButton() {
+    return IconButton(
+        icon: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 25,
+        ),
+        onPressed: () async {
+          await AccountController.instance.delete(transaction.id);
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AccountsPage()),
+          );
+        }
+    );
+  }
+
 }

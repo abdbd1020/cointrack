@@ -13,8 +13,9 @@ import 'package:swe/pages/statPage.dart';
 import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
 import '../component/drawerUI.dart';
-import '../component/generalActionButton.dart';
+import '../component/buttons/generalActionButton.dart';
 import 'addEditTransactionPage.dart';
+import 'historyPage.dart';
 import 'lendBorrowPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,11 +41,8 @@ class _HomePageState extends State<HomePage> {
 
   Future refreshNotes() async {
     setState(() => isLoading = true);
+
     this.accounts = await AccountController.instance.readAllAccounts();
-
-
-   // Account b = await AccountController.instance.create(fido);
-
 
 
     setState(() => isLoading = false);
@@ -77,6 +75,22 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: buildBody(),
+      floatingActionButton: Container(
+        height: 80.0,
+        width: 80.0,
+        child: FittedBox(
+          child: FloatingActionButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>  AddEditTransactionPage(accounts: accounts,)),
+            );
+          },
+            child: Icon(Icons.add),
+            backgroundColor: Colors.green,),
+        ),
+
+
+      ),
     );
   }
 
@@ -147,7 +161,23 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.center,
                             padding: EdgeInsets.only(
                                 left: 50, bottom: 0, right: 50, top: 0),
-                            child: buildViewDetailsButton(context))))
+                            child: buildViewDetailsButton(context)))),
+                Container(
+                    color: Colors.white,
+                    width: double.infinity,
+                    height: 50,
+                    child: Material(
+                        shadowColor: Colors.grey[100]?.withOpacity(0.4),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0.0)),
+                        elevation: 3,
+                        clipBehavior: Clip.antiAlias, // Add This
+                        child: Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                                left: 50, bottom: 0, right: 50, top: 0),
+                            child: buildViewHistoryButton(context))))
               ],
             ),
           ),
@@ -179,7 +209,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildViewDetailsButton(BuildContext context) {
-    print("Ffffas");
     return GeneralActionButton(
       title: 'Manage Accounts',
       height: 40,
@@ -189,7 +218,30 @@ class _HomePageState extends State<HomePage> {
       color: Colors.red,
       isProcessing: false,
       padding: EdgeInsets.all(0),
-      callBackOnSubmit: doChange,
+      callBackOnSubmit: (){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AccountsPage()),
+        );
+      },
+    );
+  }
+  Widget buildViewHistoryButton(BuildContext context) {
+    return GeneralActionButton(
+      title: 'View History',
+      height: 40,
+      textFontSize: 17,
+      textColor: Colors.white,
+      showNextIcon: false,
+      color: Colors.red,
+      isProcessing: false,
+      padding: EdgeInsets.all(0),
+      callBackOnSubmit: (){
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HistoryPage()),
+        );
+      },
     );
   }
 
@@ -197,35 +249,7 @@ class _HomePageState extends State<HomePage> {
     return;
   }
 
-  Future<void> doChange() async {
-    print("FDgdfg");
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AccountsPage()),
-      );
-
-
-
-    // a = 1;
-    //  await AccountController.instance.deleteAll();
-    //   var fido = const Account(
-    //     id: 1,
-    //     name: 'Bkash',
-    //     amount: 501,
-    //     type: mobileBankString,
-    //   );
-    //
-    //   Account b = await AccountController.instance.create(fido);
-
-
-
-  }
 }
 
-class Student {
-  String name;
-  double rollno;
 
-  Student({this.name, this.rollno});
-}
