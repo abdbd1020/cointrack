@@ -1,12 +1,12 @@
 
 
 class Account {
-  final int id;
-  final String name;
-  final int amount;
-  final String type;
+   int id;
+   String name;
+   int amount;
+   String type;
 
-  const Account({
+   Account({
     this.id,
      this.name,
      this.amount,
@@ -50,6 +50,6 @@ class Account {
   // each dog when using the print statement.
   @override
   String toString() {
-    return 'Dog{id: $id, name: $name, amount: $amount, type: $type}';
+    return 'Account{id: $id, name: $name, amount: $amount, type: $type}';
   }
 }

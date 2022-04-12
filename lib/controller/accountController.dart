@@ -144,7 +144,10 @@ CREATE TABLE Accounts (
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-  Future<List<Account>> dogs() async {
+
+
+
+  Future<List<Account>> getAllAccounts() async {
 
     final database = openDatabase(
       // Set the path to the database. Note: Using the `join` function from the

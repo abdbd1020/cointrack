@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/accountController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/pages/accountsPage.dart';
@@ -124,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                                           ? Container()
                                           : AccountCard(
                                               name: accounts[index].name,
-                                              amount: accounts[index].id.toDouble());
+                                              amount: accounts[index].amount.toDouble());
                                     },
                                   ),
                       ),
@@ -207,15 +208,15 @@ class _HomePageState extends State<HomePage> {
 
 
     // a = 1;
-    //   await AccountController.instance.deleteAll();
+    //  await AccountController.instance.deleteAll();
     //   var fido = const Account(
-    //     id: 2,
-    //     name: 'Rocket',
+    //     id: 1,
+    //     name: 'Bkash',
     //     amount: 501,
-    //     type: "cash",
+    //     type: mobileBankString,
     //   );
-
-      // Account b = await AccountController.instance.create(fido);
+    //
+    //   Account b = await AccountController.instance.create(fido);
 
 
 
