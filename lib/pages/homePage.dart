@@ -45,9 +45,9 @@ class _HomePageState extends State<HomePage> {
     this.accounts = await AccountController.instance.readAllAccounts();
 
 
-    setState(() => isLoading = false);
+
     if(accounts.isEmpty){
-      setState(() => isLoading = true);
+
       var firstAccount = Account(
           id:0,
           name:"Cash",
@@ -59,9 +59,10 @@ class _HomePageState extends State<HomePage> {
 
 
 
-      setState(() => isLoading = false);
+
 
     }
+    setState(() => isLoading = false);
   }
 
   @override
