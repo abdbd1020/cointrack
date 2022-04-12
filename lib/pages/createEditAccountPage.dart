@@ -257,7 +257,7 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
       account =  Account(
         id: accountId,
         name: accountNameController.text,
-        amount:int.parse(accountAmountController.text) ,
+        amount:double.parse(accountAmountController.text) ,
         type: dropdownValue,
       );
       if(isUpdate){

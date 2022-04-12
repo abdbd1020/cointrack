@@ -73,5 +73,9 @@ class TransactionModel {
 
   // Implement toString to make it easier to see information about
   // each dog when using the print statement.
+  @override
+  String toString() {
+    return 'transaction{id: $id, name: $accountName, amount: $amount, time: $time}';
+  }
 
 }

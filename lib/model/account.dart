@@ -1,9 +1,14 @@
 
 
 class Account {
-   int id;
+  static final List<String> values = [
+    /// Add all fields
+    "id", "name", "amount", "type"
+  ];
+
+  int id;
    String name;
-   int amount;
+   double amount;
    String type;
 
    Account({

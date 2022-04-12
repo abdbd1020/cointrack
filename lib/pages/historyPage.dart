@@ -41,10 +41,7 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() => isLoading = true);
     transactions = await TransactionController.instance.readAllRecords();
     accounts = await AccountController.instance.readAllAccounts();
-
-
-    // Account b = await AccountController.instance.create(fido);
-
+    print(transactions[0].toString());
 
 
     setState(() => isLoading = false);
@@ -89,7 +86,7 @@ class _HistoryPageState extends State<HistoryPage> {
           child: FloatingActionButton(onPressed: (){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddEditTransactionPage()),
+              MaterialPageRoute(builder: (context) =>  AddEditTransactionPage(accounts: accounts)),
             );
           },
             child: const Icon(Icons.add),
@@ -142,14 +139,10 @@ class _HistoryPageState extends State<HistoryPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: grey.withOpacity(0.1),
+                                      color: transactions[index].isIncome==1?Colors.green:Colors.red,
                                     ),
-                                    child: Center(
-                                      child: Image.asset(
-                                        "assets/images/bank.png",
-                                        width: 30,
-                                        height: 30,
-                                      ),
+                                    child: const Center(
+                                      child: Icon(Icons.attach_money,color: Colors.white ,)
                                     ),
                                   ),
                                   const SizedBox(width: 15),
@@ -160,13 +153,31 @@ class _HistoryPageState extends State<HistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          transactions[index].time,
+                                          transactions[index].category,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                        Text(
+                                          transactions[index].time,
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              color: black,
+                                              fontWeight: FontWeight.w500),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          transactions[index].accountName ?? "DSf",
+
+                                          style: const TextStyle(
+                                              fontSize: 10,
+                                              color: black,
+                                              fontWeight: FontWeight.w500),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+
 
                                       ],
                                     ),
@@ -181,10 +192,11 @@ class _HistoryPageState extends State<HistoryPage> {
                                 children: [
                                   Text(
                                     transactions[index].amount.toString(),
-                                    style: const TextStyle(
+
+                                    style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: Colors.green),
+                                        color: transactions[index].isIncome==1?Colors.green:Colors.red),
                                   ),
                                 ],
                               ),

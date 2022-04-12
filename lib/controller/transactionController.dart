@@ -66,6 +66,7 @@ class TransactionController {
       whereArgs: [id],
     );
   }
+
   Future<int> deleteAll() async {
     final db = await instance.database;
 

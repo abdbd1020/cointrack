@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
+import 'package:swe/pages/historyPage.dart';
 
 import '../Misc/Strings.dart';
 import '../Misc/colors.dart';
@@ -24,11 +25,14 @@ class AddEditTransactionPage extends StatefulWidget {
 class _AddEditTransactionPage extends State<AddEditTransactionPage> {
   TransactionModel transaction;
   List<Account> accounts;
+
+  bool isLoading;
   _AddEditTransactionPage(this.transaction,this.accounts);
   String dropdownValue;
   String dropdownTypeValue;
   String dropdownCategoryValue;
   Account selectedAccount;
+  double initialAmount;
 
   TextEditingController descriptionConroller = TextEditingController();
 
@@ -41,9 +45,12 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     super.initState();
     descriptionConroller.text = "";
     accountAmountController.text = accountAmount();
-    dropdownTypeValue = expenseString;
-    dropdownCategoryValue = foodAndDrinksString;
-    selectedAccount = accounts[0];
+    dropdownTypeValue = transaction==null? expenseString:transaction.isIncome==0?expenseString:incomeString;
+    dropdownCategoryValue = transaction==null?foodAndDrinksString:transaction.category;
+    selectedAccount =transaction==null? accounts[0]:getAccount(accounts,transaction.accountId);
+    initialAmount = transaction==null? 0:transaction.amount;
+
+
 
 
 
@@ -85,7 +92,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
         width: 80.0,
         child: FittedBox(
           child: FloatingActionButton(onPressed: addEditAccount,
-            child: Icon( Icons.arrow_forward,
+            child: const Icon( Icons.arrow_forward,
               color: white,),
             backgroundColor: Colors.red,),
         ),
@@ -348,6 +355,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     }
     bool isUpdate = true;
     if(transaction==null)isUpdate = false;
+
     transaction =  TransactionModel(
       id: transactionId,
       accountName: selectedAccount.name,
@@ -358,6 +366,21 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
       amount: double.parse(accountAmountController.text),
       time: formattedTime
     );
+    double iniAmount = (double.parse(accountAmountController.text)-initialAmount);
+    if(isIncomeInt==1){
+      iniAmount=iniAmount*-1;
+    }
+    Account currentAccount = await AccountController.instance.getSingleAccount(selectedAccount.id);
+    double finalAmount =currentAccount.amount - iniAmount  ;
+    var updatedAccount = Account(
+      id:selectedAccount.id,
+      name:selectedAccount.name,
+      amount: finalAmount,
+      type:currentAccount.type
+
+    );
+    await AccountController.instance.update(updatedAccount);
+
     if(isUpdate){
       await TransactionController.instance.update(transaction);
     }
@@ -385,14 +408,24 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
           size: 25,
         ),
         onPressed: () async {
-          await AccountController.instance.delete(transaction.id);
+          await TransactionController.instance.delete(transaction.id);
           Navigator.of(context).pop();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AccountsPage()),
+            MaterialPageRoute(builder: (context) => HistoryPage()),
           );
         }
     );
   }
+
+  getAccount(List<Account> accounts, int accountId) {
+    for(var acc in accounts){
+      if(acc.id==accountId)return acc;
+
+    }
+    return accounts[0];
+  }
+
+
 
 }

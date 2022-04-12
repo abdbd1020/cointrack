@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:swe/Misc/Strings.dart';
 import 'package:swe/model/account.dart';
 
 class AccountController {
@@ -32,7 +33,7 @@ class AccountController {
 CREATE TABLE Accounts ( 
   id $idType, 
   name $textType,
-  amount $integerType,
+  amount $doubleType,
   type $textType
 
   )
@@ -41,7 +42,7 @@ CREATE TABLE Accounts (
     await db.execute('''
 CREATE TABLE Transactions ( 
   id $idType, 
-  AccountName $textType,
+  accountName $textType,
   accountId $integerType,
   amount $doubleType,
   category $textType,
@@ -51,6 +52,8 @@ CREATE TABLE Transactions (
 
   )
 ''');
+
+
   }
 
 
@@ -98,6 +101,24 @@ CREATE TABLE Transactions (
     final result = await db.query('Accounts');
 
     return result.map((json) => Account.fromJson(json)).toList();
+  }
+
+
+  Future<Account> getSingleAccount(int id) async {
+    final db = await instance.database;
+
+    final maps = await db.query(
+      "Accounts",
+      columns: Account.values,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Account.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
   }
 
   Future<int> update(Account account) async {

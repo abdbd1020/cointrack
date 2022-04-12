@@ -46,6 +46,22 @@ class _HomePageState extends State<HomePage> {
 
 
     setState(() => isLoading = false);
+    if(accounts.isEmpty){
+      setState(() => isLoading = true);
+      var firstAccount = Account(
+          id:0,
+          name:"Cash",
+          amount: 0,
+          type:cashString
+
+      );
+      await AccountController.instance.create(firstAccount);
+
+
+
+      setState(() => isLoading = false);
+
+    }
   }
 
   @override
