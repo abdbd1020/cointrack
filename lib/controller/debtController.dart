@@ -1,13 +1,14 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:swe/model/transaction.dart';
 
-class TransactionController {
-  static final TransactionController instance = TransactionController._init();
+import '../model/debt.dart';
+
+class DebtController {
+  static final DebtController instance = DebtController._init();
 
   static Database _database;
 
-  TransactionController._init();
+  DebtController._init();
   Future<Database> get database async {
     if (_database != null) return _database;
 
@@ -25,35 +26,41 @@ class TransactionController {
 
   }
 
-
-
-
-  Future<TransactionModel> create(TransactionModel transaction) async {
+  Future<int> maxItem() async {
     final db = await instance.database;
-
-    final id = await db.insert('Transactions', transaction.toJsonMap());
-    return transaction.copy(id: id);
+    final max = await db.rawQuery("SELECT max(id) as max FROM Debt");
+    return max[0]["max"];
   }
 
 
-  Future<List<TransactionModel>> readAllRecords() async {
+
+
+  Future<Debt> create(Debt debt) async {
+    final db = await instance.database;
+
+    final id = await db.insert('Debt', debt.toJsonMap());
+    return debt.copy(id: id);
+  }
+
+
+  Future<List<Debt>> readAllRecords() async {
     final db = await instance.database;
 
 
 
-    final result = await db.query('Transactions');
+    final result = await db.query('Debt');
 
-    return result.map((json) => TransactionModel.fromJson(json)).toList();
+    return result.map((json) => Debt.fromJson(json)).toList();
   }
 
-  Future<int> update(TransactionModel transaction) async {
+  Future<int> update(Debt debt) async {
     final db = await instance.database;
 
     return db.update(
-      'Transactions',
-      transaction.toJsonMap(),
+      'Debt',
+      debt.toJsonMap(),
       where: 'id = ?',
-      whereArgs: [transaction.id],
+      whereArgs: [debt.id],
     );
   }
 
@@ -61,7 +68,7 @@ class TransactionController {
     final db = await instance.database;
 
     return await db.delete(
-      'Transactions',
+      'Debt',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -70,19 +77,16 @@ class TransactionController {
   Future<int> deleteAll() async {
     final db = await instance.database;
 
-    return await   db.delete("Transactions");
+    return await   db.delete("Debt");
 
-  }
-  Future<int> maxItem() async {
-    final db = await instance.database;
-    final max = await db.rawQuery("SELECT max(id) as max FROM Transactions");
-    return max[0]["max"];
   }
   Future close() async {
     final db = await instance.database;
 
     db.close();
   }
+
+
 
 
 

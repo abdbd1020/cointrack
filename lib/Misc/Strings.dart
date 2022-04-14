@@ -15,3 +15,7 @@ const String tuitionString = "Tuition";
 const String investmentString = "Investment";
 
 const String expenseString = "Expense";
+
+const String borrowString = "Borrow";
+const String lendString = "Lend";
+const String debtString = "Debt";

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:swe/controller/debtController.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
 import 'package:swe/pages/historyPage.dart';
@@ -10,58 +10,61 @@ import '../Misc/colors.dart';
 import '../component/buttons/appBarBackButton.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
+import '../model/debt.dart';
 import 'accountsPage.dart';
 import 'homePage.dart';
 
-class AddEditTransactionPage extends StatefulWidget {
-  const AddEditTransactionPage({Key key, this.transaction, this.accounts})
-      : super(key: key);
+
+class AddEditDebtPage extends StatefulWidget {
+  const AddEditDebtPage({Key key, this.transaction, this.accounts, this.debt,}) : super(key: key);
   final TransactionModel transaction;
+  final Debt debt;
+
   final List<Account> accounts;
 
   @override
-  _AddEditTransactionPage createState() =>
-      _AddEditTransactionPage(transaction, accounts);
+  _AddEditDebtPage createState() => _AddEditDebtPage(transaction,accounts,debt);
 }
 
-class _AddEditTransactionPage extends State<AddEditTransactionPage> {
+class _AddEditDebtPage extends State<AddEditDebtPage> {
   TransactionModel transaction;
   List<Account> accounts;
 
   bool isLoading;
-  _AddEditTransactionPage(this.transaction, this.accounts);
+
+  Debt debt;
+  _AddEditDebtPage(this.transaction,this.accounts, this.debt);
   String dropdownValue;
   String dropdownTypeValue;
   String dropdownCategoryValue;
   Account selectedAccount;
   double initialAmount;
-  String date = "";
-  DateTime selectedDate = DateTime.now();
 
-  TextEditingController descriptionConroller = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   TextEditingController timeController = TextEditingController();
+  TextEditingController dueTimeController = TextEditingController();
+  TextEditingController debtNameController = TextEditingController();
 
   TextEditingController accountAmountController = TextEditingController();
-  int transactionId = 0;
+  int transactionId=0;
+  int debtId=0;
+  DateTime selectedDate = DateTime.now();
+  DateTime selectedDueDate = DateTime.now();
+
 
   @override
   void initState() {
     super.initState();
-    descriptionConroller.text = "";
+    descriptionController.text = "";
     accountAmountController.text = accountAmount();
-    dropdownTypeValue = transaction == null
-        ? expenseString
-        : transaction.isIncome == 0
-            ? expenseString
-            : incomeString;
-    dropdownCategoryValue =
-        transaction == null ? foodAndDrinksString : transaction.category;
-    selectedAccount = transaction == null
-        ? accounts[0]
-        : getAccount(accounts, transaction.accountId);
-    initialAmount = transaction == null ? 0 : transaction.amount;
-    timeController.text =
-        "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+    debtNameController.text = debtName();
+    dropdownTypeValue = debt==null? lendString:debt.isLend==0?borrowString:lendString;
+    selectedAccount =transaction==null? accounts[0]:getAccount(accounts,transaction.accountId);
+    initialAmount = transaction==null? 0:transaction.amount;
+
+
+
+
 
     // dropdownValue = account == null ? cashString : account.type;
   }
@@ -75,42 +78,38 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
         centerTitle: true,
         title: transaction == null
             ? const Text(
-                'Add Debt',
-                style: TextStyle(color: Colors.white),
-              )
+          'Add Transaction',
+          style: TextStyle(color: Colors.white),
+        )
             : const Text(
-                'Edit Debt',
-                style: TextStyle(color: Colors.white),
-              ),
-        actions: [
-          transaction != null
-              ? AppBarDeleteButton()
-              : TextButton(
-                  style: ButtonStyle(
-                    foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.transparent),
-                  ),
-                  onPressed: () {},
-                  child: Text(''),
-                )
-        ],
+          'Edit Transaction',
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [transaction!=null?AppBarDeleteButton():TextButton(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          ),
+          onPressed: () { },
+          child: Text(''),
+        )],
       ),
+
       backgroundColor: white.withOpacity(0.95),
       floatingActionButton: Container(
         decoration: BoxDecoration(
-            color: Colors.transparent, borderRadius: BorderRadius.circular(15)),
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(15)),
+
         height: 80.0,
         width: 80.0,
         child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: addEditTransaction,
-            child: const Icon(
-              Icons.arrow_forward,
-              color: white,
-            ),
-            backgroundColor: Colors.red,
-          ),
+          child: FloatingActionButton(onPressed: addEditDebt,
+            child: const Icon( Icons.arrow_forward,
+              color: white,),
+            backgroundColor: Colors.red,),
         ),
+
+
       ),
       body: getBody(),
     );
@@ -135,13 +134,15 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
           const SizedBox(
             height: 10,
           ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 const Text(
-                  "Transaction type",
+                  "Debt type",
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
@@ -154,7 +155,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
 
                   // elevation: 5,
                   iconEnabledColor: Colors.black,
-                  items: <String>[expenseString, incomeString]
+                  items: <String>[lendString,borrowString]
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -169,7 +170,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 14,
-                        fontWeight: FontWeight.w500),
+                        fontWeight: FontWeight.bold),
                   ),
                   onChanged: (String value) {
                     setState(() {
@@ -180,6 +181,104 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                 const SizedBox(
                   height: 10,
                 ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    const Text(
+                      "Name",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: Color(0xff67727d)),
+                    ),
+                    TextField(
+                      controller: debtNameController,
+                      cursorColor: black,
+                      minLines: 1,
+                      maxLines: 4,
+                      style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: black),
+                      decoration: const InputDecoration(
+                          hintText: "Enter lender/borrower Name",
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.yellow
+                              ))),
+                    ),
+
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Date",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      color: Color(0xff67727d)),
+                ),
+                InkWell(
+                  onTap: () {
+                    _selectDate(context);
+                  },
+                  child: TextField(
+                    controller: timeController,
+                    enabled: false,
+                    readOnly: true,
+                    cursorColor: black,
+                    style: const TextStyle(
+                        fontSize: 17,
+
+                        color: black),
+                    decoration: const InputDecoration(
+                        hintText: "Select Date",
+                        hintStyle: TextStyle(fontWeight: FontWeight.bold),
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black))),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Due Date",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      color: Color(0xff67727d)),
+                ),
+                InkWell(
+                  onTap: () {
+                    _selectDueDate(context);
+                  },
+                  child: TextField(
+                    controller: dueTimeController,
+                    enabled: false,
+                    readOnly: true,
+                    cursorColor: black,
+                    style: const TextStyle(
+                        fontSize: 17,
+
+                        color: black),
+                    decoration: const InputDecoration(
+                        hintText: "Select Date",
+                        hintStyle: TextStyle(fontWeight: FontWeight.bold),
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black))),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+
+
+
                 const Text(
                   "Transaction account",
                   style: TextStyle(
@@ -194,8 +293,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
 
                   // elevation: 5,
                   iconEnabledColor: Colors.black,
-                  items: accounts
-                      ?.map<DropdownMenuItem<Account>>((Account account) {
+                  items: accounts?.map<DropdownMenuItem<Account>>((Account account) {
                     return DropdownMenuItem<Account>(
                       value: account,
                       child: Text(account.name),
@@ -206,7 +304,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 14,
-                        fontWeight: FontWeight.w500),
+                      fontWeight: FontWeight.bold),
                   ),
                   onChanged: (Account account) {
                     setState(() {
@@ -217,48 +315,10 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                DropdownButton<String>(
-                  focusColor: Colors.white,
-                  value: dropdownCategoryValue,
-                  isExpanded: true,
 
-                  // elevation: 5,
-                  iconEnabledColor: Colors.black,
-                  items: <String>[
-                    foodAndDrinksString,
-                    shoppingString,
-                    housingString,
-                    transportationString,
-                    groceriesString,
-                    othersString,
-                    incomeString,
-                    tuitionString,
-                    investmentString
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    );
-                  }).toList(),
-                  hint: const Text(
-                    "Please choose a type",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  onChanged: (String value) {
-                    setState(() {
-                      dropdownCategoryValue = value;
-                    });
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
+
+
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -271,49 +331,19 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                     ),
                     TextField(
                       controller: accountAmountController,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+
                       cursorColor: black,
                       style: const TextStyle(
                           fontSize: 17,
-                          
+                          fontWeight: FontWeight.bold,
                           color: black),
                       decoration: const InputDecoration(
                           hintText: "Enter Amount",
                           border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black))),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "Date",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
-                          color: Color(0xff67727d)),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      child: TextField(
-                        controller: timeController,
-                        enabled: false,
-                        readOnly: true,
-                        cursorColor: black,
-                        style: const TextStyle(
-                            fontSize: 17,
-                            
-                            color: black),
-                        decoration: const InputDecoration(
-                            hintText: "Select Date",
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black))),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
+                              borderSide: BorderSide(
+                                  color: Colors.black
+                              ))),
                     ),
                     const SizedBox(
                       height: 10,
@@ -326,21 +356,26 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
                           color: Color(0xff67727d)),
                     ),
                     TextField(
-                      controller: descriptionConroller,
+                      controller: descriptionController,
                       cursorColor: black,
                       minLines: 1,
                       maxLines: 4,
                       style: const TextStyle(
                           fontSize: 17,
-                          
+                          fontWeight: FontWeight.bold,
                           color: black),
                       decoration: const InputDecoration(
                           hintText: "Add description",
                           border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.yellow))),
+                              borderSide: BorderSide(
+                                  color: Colors.yellow
+                              ))),
                     ),
+
                   ],
                 ),
+
+
               ],
             ),
           )
@@ -349,6 +384,8 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     );
   }
 
+
+
   String accountAmount() {
     if (transaction == null) {
       return "";
@@ -356,37 +393,48 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
       return transaction.amount.toString();
     }
   }
+  String debtName() {
+    if (debt == null) {
+      return "";
+    } else {
+      return debt.name;
+    }
+  }
 
-  Future addEditTransaction() async {
+
+  Future addEditDebt() async {
     if (accountAmountController.text == "") {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Amount is needed"),
         duration: Duration(milliseconds: 500),
       ));
       return;
+    }  if (debtNameController.text == "") {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Name is needed"),
+        duration: Duration(milliseconds: 500),
+      ));
+      return;
     }
-    if (transaction != null) {
+
+    if (debt != null) {
       transactionId = transaction.id;
+      debtId = debt.id;
     } else {
-      List<TransactionModel> transaction =
-          await TransactionController.instance.readAllRecords();
-      int ans = -1;
-      for (var acc in transaction) {
-        if (ans < acc.id) {
-          ans = acc.id;
-        }
-      }
-      ans++;
-      transactionId = ans;
+      int temp =  await DebtController.instance.maxItem();
+      debtId = temp==null?0:temp+1;
+      temp = await TransactionController.instance.maxItem();
+      transactionId = temp==null?0:temp+1;
     }
 
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('HH:mm');
     String formattedTime = formatter.format(now);
     formattedTime = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}" + formattedTime;
+    String formattedDueTime = "${selectedDueDate.day}-${selectedDueDate.month}-${selectedDueDate.year}" + formattedTime;
 
     int isIncomeInt = 0;
-    if (dropdownTypeValue == incomeString) {
+    if (dropdownTypeValue == borrowString) {
       isIncomeInt = 1;
     }
     bool isUpdate = true;
@@ -396,18 +444,26 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
         id: transactionId,
         accountName: selectedAccount.name,
         accountId: selectedAccount.id,
-        category: dropdownCategoryValue,
+        category: debtString,
         isIncome: isIncomeInt,
-        description: descriptionConroller.text,
+        description: descriptionController.text,
         amount: double.parse(accountAmountController.text),
         time: formattedTime);
+    debt = Debt(
+        id: debtId,
+        transactionId: transactionId,
+        name: debtNameController.text,
+        amount: double.parse(accountAmountController.text),
+        isLend: isIncomeInt,
+        dueDate: formattedDueTime,
+      );
     double iniAmount =
-        (double.parse(accountAmountController.text) - initialAmount);
+    (double.parse(accountAmountController.text) - initialAmount);
     if (isIncomeInt == 1) {
       iniAmount = iniAmount * -1;
     }
     Account currentAccount =
-        await AccountController.instance.getSingleAccount(selectedAccount.id);
+    await AccountController.instance.getSingleAccount(selectedAccount.id);
     double finalAmount = currentAccount.amount - iniAmount;
     var updatedAccount = Account(
         id: selectedAccount.id,
@@ -417,8 +473,10 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     await AccountController.instance.update(updatedAccount);
 
     if (isUpdate) {
+      await DebtController.instance.update(debt);
       await TransactionController.instance.update(transaction);
     } else {
+      await DebtController.instance.create(debt);
       await TransactionController.instance.create(transaction);
     }
 
@@ -459,17 +517,31 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
 
   _selectDate(BuildContext context) async {
     final DateTime selected = await showDatePicker(
-
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2010),
       lastDate: DateTime(2025),
     );
-    if (selected != null && selected != selectedDate) {
+    if (selected != null && selected != selectedDate)
       setState(() {
         selectedDate = selected;
       });
-    }
     timeController.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
   }
+  _selectDueDate(BuildContext context) async {
+    final DateTime selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDueDate,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2025),
+    );
+    if (selected != null && selected != selectedDueDate)
+      setState(() {
+        selectedDueDate = selected;
+      });
+    dueTimeController.text = "${selectedDueDate.day}-${selectedDueDate.month}-${selectedDueDate.year}";
+  }
+
+
+
 }

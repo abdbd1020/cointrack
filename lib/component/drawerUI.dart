@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:swe/pages/historyPage.dart';
 
 import '../pages/homePage.dart';
+import '../pages/debtPage.dart';
+import '../pages/statPage.dart';
 
 class MainDrawer extends StatelessWidget {
   static const MainDrawer _drawer = MainDrawer._internal();
@@ -49,31 +52,58 @@ class MainDrawer extends StatelessWidget {
                     );                  }),
               ListTile(
                   title: const Text(
-                    'BOOKING HISTORY',
+                    'HISTORY',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
                     Icons.directions_car,
                     color: Colors.black,
                   ),
+                  // onTap: () {
+                  //   Navigator.popAndPushNamed(context, '/login');
+                  // }\
                   onTap: () {
-                    Navigator.popAndPushNamed(context, '/login');
-                  }),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HistoryPage()),
+                    );                  }
+                ),
               ListTile(
                   title: const Text(
-                    'PROMO CODE',
+                    'Statistics',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
                     Icons.pageview_rounded,
                     color: Colors.black,
                   ),
+                  // onTap: () {
+                  //   Navigator.popAndPushNamed(context, '/promo_code');
+                  // }
                   onTap: () {
-                    Navigator.popAndPushNamed(context, '/promo_code');
-                  }),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => StatsPage()),
+                    );                  }
+                  ),
               ListTile(
                   title: const Text(
-                    'LOG OUT',
+                    'Debts',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  leading: const Icon(
+                    Icons.all_out,
+                    color: Colors.black,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DebtsPage()),
+                    );                  }
+                  ),
+              ListTile(
+                  title: const Text(
+                    'Settings',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(

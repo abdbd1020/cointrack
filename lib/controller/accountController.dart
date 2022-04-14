@@ -52,6 +52,17 @@ CREATE TABLE Transactions (
 
   )
 ''');
+    await db.execute('''
+CREATE TABLE Debt ( 
+  id $idType, 
+  name $textType,
+  transactionId $integerType,
+  isLend $integerType,
+  dueDate $textType,
+  amount $doubleType
+
+  )
+''');
 
 
   }

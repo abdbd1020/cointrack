@@ -1,28 +1,25 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/accountController.dart';
+import 'package:swe/controller/debtController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/pages/accountsPage.dart';
-import 'package:swe/pages/statPage.dart';
 
 import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
 import '../component/drawerUI.dart';
 import '../component/buttons/generalActionButton.dart';
+import '../controller/transactionController.dart';
 import 'addEditTransactionPage.dart';
 import 'historyPage.dart';
-import 'lendBorrowPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage() : super();
 
   @override
-  State<StatefulWidget> createState() => new _HomePageState();
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -43,25 +40,22 @@ class _HomePageState extends State<HomePage> {
     setState(() => isLoading = true);
 
     this.accounts = await AccountController.instance.readAllAccounts();
+    int a = await TransactionController.instance.maxItem();
 
 
 
     if(accounts.isEmpty){
+      makeFirstAccount();
 
-      var firstAccount = Account(
-          id:0,
-          name:"Cash",
-          amount: 0,
-          type:cashString
 
-      );
-      await AccountController.instance.create(firstAccount);
 
 
 
 
 
     }
+
+
     setState(() => isLoading = false);
   }
 
@@ -264,6 +258,23 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> refreshPage() async {
     return;
+  }
+
+  Future<void> makeFirstAccount() async {
+
+    var firstAccount = Account(
+        id:0,
+        name:"Cash",
+        amount: 0,
+        type:cashString
+
+    );
+    await AccountController.instance.create(firstAccount);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage()),
+          (Route<dynamic> route) => false,
+    );
   }
 
 
