@@ -7,6 +7,10 @@ class Debt {
   String name;
   String dueDate;
   int isLend;
+  static final List<String> values = [
+    /// Add all fields
+    "id", "transactionId", "amount", "name","dueDate","isLend"
+  ];
 
   Debt({
     this.id,

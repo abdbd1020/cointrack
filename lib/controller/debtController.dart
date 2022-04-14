@@ -31,7 +31,22 @@ class DebtController {
     final max = await db.rawQuery("SELECT max(id) as max FROM Debt");
     return max[0]["max"];
   }
+  Future<Debt> getSingleAccount(int id) async {
+    final db = await instance.database;
 
+    final maps = await db.query(
+      "Debt",
+      columns: Debt.values,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Debt.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
 
 
 

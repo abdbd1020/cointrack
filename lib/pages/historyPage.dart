@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
 
@@ -112,6 +113,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Column(
 
                 children: List.generate(transactions.length, (index) {
+                  if(transactions[index].category == debtString )return Container();
                   return Column(
 
                     children: [

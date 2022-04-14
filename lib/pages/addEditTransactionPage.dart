@@ -75,11 +75,11 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
         centerTitle: true,
         title: transaction == null
             ? const Text(
-                'Add Debt',
+                'Add transaction',
                 style: TextStyle(color: Colors.white),
               )
             : const Text(
-                'Edit Debt',
+                'Edit transaction',
                 style: TextStyle(color: Colors.white),
               ),
         actions: [
@@ -365,6 +365,13 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
       ));
       return;
     }
+    if (!isNumeric(accountAmountController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Invalid amount"),
+        duration: Duration(milliseconds: 500),
+      ));
+      return;
+    }
     if (transaction != null) {
       transactionId = transaction.id;
     } else {
@@ -472,4 +479,11 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     }
     timeController.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
   }
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
 }

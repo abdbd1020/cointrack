@@ -21,6 +21,23 @@ class TransactionController {
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
+  Future<TransactionModel> getSingleAccount(int id) async {
+    final db = await instance.database;
+
+    final maps = await db.query(
+      "Transactions",
+      columns: TransactionModel.values,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return TransactionModel.fromJson(maps.first);
+    } else {
+      throw Exception('ID $id not found');
+    }
+  }
+
   Future _createDB(Database db, int version) async {
 
   }

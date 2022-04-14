@@ -3,6 +3,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:swe/Misc/Strings.dart';
+import 'package:swe/controller/debtController.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
 import 'package:swe/pages/addEditDebtPage.dart';
@@ -11,8 +13,7 @@ import '../Misc/colors.dart';
 import '../component/drawerUI.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
-import '../model/daily.dart';
-import '../model/dayMonth.dart';
+import '../model/debt.dart';
 import 'addEditTransactionPage.dart';
 import 'createEditAccountPage.dart';
 
@@ -26,8 +27,8 @@ class _DebtsPageState extends State<DebtsPage> {
 
   bool isLoading = false;
   List<Account> accounts;
-  List<TransactionModel> transactions = [];
-
+  List<Debt> debt = [];
+  String lendOrBorrowString = "Lend";
 
   int a = 0;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,9 +41,9 @@ class _DebtsPageState extends State<DebtsPage> {
 
   Future refreshNotes() async {
     setState(() => isLoading = true);
-    transactions = await TransactionController.instance.readAllRecords();
+    debt = await DebtController.instance.readAllRecords();
     accounts = await AccountController.instance.readAllAccounts();
-    print(transactions[0].toString());
+    print(debt[0].toString());
 
 
     setState(() => isLoading = false);
@@ -112,18 +113,13 @@ class _DebtsPageState extends State<DebtsPage> {
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
 
-                children: List.generate(transactions.length, (index) {
+                children: List.generate(debt.length, (index) {
+
                   return Column(
 
                     children: [
                       InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddEditTransactionPage(accounts: accounts,transaction: transactions[index]),
-                            ),
-                          );
+                        onTap:(){ changeToAddDebtPage(debt[index].transactionId,debt[index].id);
                         },
 
                         child: Row(
@@ -140,7 +136,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: transactions[index].isIncome==1?Colors.green:Colors.red,
+                                      color: debt[index].isLend==0?Colors.green:Colors.red,
                                     ),
                                     child: const Center(
                                         child: Icon(Icons.attach_money,color: Colors.white ,)
@@ -154,26 +150,19 @@ class _DebtsPageState extends State<DebtsPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          transactions[index].category,
+                                          debt[index].isLend==1?"Me -> "+ debt[index].name:debt[index].name+" -> Me",
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                        SizedBox(height: 2,),
                                         Text(
-                                          transactions[index].time,
-                                          style: const TextStyle(
-                                              fontSize: 10,
-                                              color: black,
-                                              fontWeight: FontWeight.w500),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          transactions[index].accountName ?? "DSf",
+                                          "Due date -> "+ debt[index].dueDate ,
 
                                           style: const TextStyle(
-                                              fontSize: 10,
+                                              fontSize: 13,
                                               color: black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
@@ -192,12 +181,12 @@ class _DebtsPageState extends State<DebtsPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    transactions[index].amount.toString(),
+                                    debt[index].amount.toString(),
 
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: transactions[index].isIncome==1?Colors.green:Colors.red),
+                                        color: debt[index].isLend==0?Colors.green:Colors.red),
                                   ),
                                 ],
                               ),
@@ -255,6 +244,17 @@ class _DebtsPageState extends State<DebtsPage> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  changeToAddDebtPage(int transactionId,int debtId) async {
+    TransactionModel transaction = await TransactionController.instance.getSingleAccount(transactionId);
+    Debt debt = await DebtController.instance.getSingleAccount(debtId);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddEditDebtPage(accounts: accounts,transaction: transaction,debt: debt)
       ),
     );
   }

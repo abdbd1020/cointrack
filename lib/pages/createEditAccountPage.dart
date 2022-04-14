@@ -234,6 +234,13 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
       ));
       return;
     }
+    if (!isNumeric(accountAmountController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Invalid amount"),
+        duration: Duration(milliseconds: 500),
+      ));
+      return;
+    }
     if(accountAmountController.text==""){
 
       accountAmountController.text=="0";
@@ -296,4 +303,11 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
       }
     );
   }
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
 }

@@ -9,7 +9,10 @@ class TransactionModel {
   String description;
   String category;
   int isIncome;
-
+  static final List<String> values = [
+    /// Add all fields
+    "id", "accountName", "accountId", "time","amount","description","category","isIncome"
+  ];
   TransactionModel({
     this.id,
     this.accountName,

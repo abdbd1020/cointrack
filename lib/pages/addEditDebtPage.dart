@@ -61,6 +61,10 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
     dropdownTypeValue = debt==null? lendString:debt.isLend==0?borrowString:lendString;
     selectedAccount =transaction==null? accounts[0]:getAccount(accounts,transaction.accountId);
     initialAmount = transaction==null? 0:transaction.amount;
+    timeController.text =
+    "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+    dueTimeController.text =
+    "${selectedDueDate.day}/${selectedDueDate.month}/${selectedDueDate.year}";
 
 
 
@@ -416,6 +420,13 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
       ));
       return;
     }
+    if (!isNumeric(accountAmountController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Invalid amount"),
+        duration: Duration(milliseconds: 500),
+      ));
+      return;
+    }
 
     if (debt != null) {
       transactionId = transaction.id;
@@ -429,9 +440,9 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
 
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('HH:mm');
-    String formattedTime = formatter.format(now);
-    formattedTime = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}" + formattedTime;
-    String formattedDueTime = "${selectedDueDate.day}-${selectedDueDate.month}-${selectedDueDate.year}" + formattedTime;
+    String tempTime = formatter.format(now);
+    String formattedTime = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}" +"  "+ tempTime;
+    String formattedDueTime = "${selectedDueDate.day}-${selectedDueDate.month}-${selectedDueDate.year}";
 
     int isIncomeInt = 0;
     if (dropdownTypeValue == borrowString) {
@@ -500,6 +511,7 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
         ),
         onPressed: () async {
           await TransactionController.instance.delete(transaction.id);
+          await DebtController.instance.delete(debt.id);
           Navigator.of(context).pop();
           Navigator.push(
             context,
@@ -540,6 +552,12 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
         selectedDueDate = selected;
       });
     dueTimeController.text = "${selectedDueDate.day}-${selectedDueDate.month}-${selectedDueDate.year}";
+  }
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
   }
 
 
