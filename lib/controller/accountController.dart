@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/model/account.dart';
 
 class AccountController {
   static final AccountController instance = AccountController._init();
+
+
 
   static Database _database;
 
@@ -22,6 +25,7 @@ class AccountController {
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
+
 
   Future _createDB(Database db, int version) async {
     final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';

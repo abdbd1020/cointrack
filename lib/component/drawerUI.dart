@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:swe/model/plannedPaymentModel.dart';
+import 'package:swe/controller/accountController.dart';
 import 'package:swe/pages/historyPage.dart';
-
+import 'package:swe/pages/settingsPage.dart';
 import '../pages/homePage.dart';
 import '../pages/debtPage.dart';
 import '../pages/plannedPaymentPage.dart';
@@ -85,7 +85,7 @@ class MainDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StatsPage()),
+                      MaterialPageRoute(builder: (context) => StatisticsPage()),
                     );                  }
                   ),
               ListTile(
@@ -127,18 +127,25 @@ class MainDrawer extends StatelessWidget {
                     Icons.all_out,
                     color: Colors.black,
                   ),
-                  onTap: () async {
-                    //islogin false
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/', (Route<dynamic> route) => false);
-                  }),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );                  }
+              ),
+
             ],
           ),
         ),
 
+
+
+
       ],
     );
   }
+
+
 
 
 

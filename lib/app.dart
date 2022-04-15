@@ -30,7 +30,12 @@ class _AppSate extends State<App> {
 
   void initProject() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLogin', true);
+    if(prefs.getBool('isLoggedIn')==null){
+      await prefs.setBool('isLoggedIn', true);
+    }
+    if(prefs.getBool('isPass')==null){
+      await prefs.setBool('isPass', false);
+    }
     isLogin = prefs.getBool('isLogin');
     WidgetsFlutterBinding.ensureInitialized();
 

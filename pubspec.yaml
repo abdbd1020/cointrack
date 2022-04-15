@@ -35,7 +35,9 @@ dependencies:
   path: ^1.8.0
   fluttertoast: ^7.1.1
   flutter_icons: ^1.1.0
-  fl_chart: ^0.12.2
+  pie_chart: ^5.3.0
+  settings_ui: ^2.0.2
+
 
 
 
@@ -46,6 +48,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   flutter_datetime_picker: ^1.5.1
+  flutter_switch: ^0.3.2
 
 dev_dependencies:
   flutter_test:

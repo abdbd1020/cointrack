@@ -3,12 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/accountController.dart';
-import 'package:swe/controller/debtController.dart';
 import 'package:swe/controller/plannedPaymentController.dart';
-import 'package:swe/controller/timerController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/pages/accountsPage.dart';
-
 import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
 import '../component/drawerUI.dart';
