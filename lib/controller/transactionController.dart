@@ -95,6 +95,11 @@ class TransactionController {
     final max = await db.rawQuery("SELECT max(id) as max FROM Transactions");
     return max[0]["max"];
   }
+  Future<int> minItem() async {
+    final db = await instance.database;
+    final min = await db.rawQuery("SELECT min(id) as min FROM Transactions");
+    return min[0]["min"];
+  }
   Future close() async {
     final db = await instance.database;
 

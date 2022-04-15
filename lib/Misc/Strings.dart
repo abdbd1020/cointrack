@@ -19,3 +19,23 @@ const String expenseString = "Expense";
 const String borrowString = "Borrow";
 const String lendString = "Lend";
 const String debtString = "Debt";
+
+const String weeklyString = "Weekly";
+const String monthlyString = "Monthly";
+const String dailyString = "Daily";
+
+const String iniTime = "10-13-2010";
+
+
+
+const String sunDayString = "Sunday";
+const String monDayString = "Monday";
+const String tuesDayString = "Tuesday";
+const String wednesDayString = "Wednesday";
+const String thursDayString = "Thursday";
+const String friDayString = "Friday";
+const String saturDayString = "Saturday";
+
+
+
+

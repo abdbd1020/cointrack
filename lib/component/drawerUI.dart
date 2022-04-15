@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:swe/model/plannedPaymentModel.dart';
 import 'package:swe/pages/historyPage.dart';
 
 import '../pages/homePage.dart';
 import '../pages/debtPage.dart';
+import '../pages/plannedPaymentPage.dart';
 import '../pages/statPage.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -101,6 +103,21 @@ class MainDrawer extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => DebtsPage()),
                     );                  }
                   ),
+              ListTile(
+                  title: const Text(
+                    'Planned Payment',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  leading: const Icon(
+                    Icons.all_out,
+                    color: Colors.black,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PlannedPaymentPage()),
+                    );                  }
+              ),
               ListTile(
                   title: const Text(
                     'Settings',

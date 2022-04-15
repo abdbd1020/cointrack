@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:swe/Misc/Strings.dart';
+import 'package:swe/controller/timerController.dart';
 import 'package:swe/controller/transactionController.dart';
+import 'package:swe/model/plannedPaymentModel.dart';
 import 'package:swe/model/transaction.dart';
+import 'package:swe/pages/addEditPlannedPaymentPage.dart';
 
 import '../Misc/colors.dart';
 import '../component/drawerUI.dart';
@@ -17,16 +20,18 @@ import 'addEditTransactionPage.dart';
 import 'createEditAccountPage.dart';
 
 
-class HistoryPage extends StatefulWidget {
+class PlannedPaymentPage extends StatefulWidget {
+  const PlannedPaymentPage({Key key}) : super(key: key);
+
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  _PlannedPaymentPageState createState() => _PlannedPaymentPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
 
   bool isLoading = false;
   List<Account> accounts;
-  List<TransactionModel> transactions = [];
+  List<PlannedPayment> plannedPayments = [];
 
 
   int a = 0;
@@ -40,9 +45,8 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Future refreshNotes() async {
     setState(() => isLoading = true);
-    transactions = await TransactionController.instance.readAllRecords();
+    plannedPayments = await TimerController.instance.readAllRecords();
     accounts = await AccountController.instance.readAllAccounts();
-    print(transactions[0].toString());
 
 
     setState(() => isLoading = false);
@@ -73,7 +77,7 @@ class _HistoryPageState extends State<HistoryPage> {
         centerTitle: true,
         title:  const Text(
 
-          'Transaction',
+          'Planned Payment',
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -87,7 +91,7 @@ class _HistoryPageState extends State<HistoryPage> {
           child: FloatingActionButton(onPressed: (){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>  AddEditTransactionPage(accounts: accounts)),
+              MaterialPageRoute(builder: (context) =>  AddEditPlannedPaymentPage(accounts: accounts)),
             );
           },
             child: const Icon(Icons.add),
@@ -112,20 +116,14 @@ class _HistoryPageState extends State<HistoryPage> {
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
 
-                children: List.generate(transactions.length, (index) {
-                  if(transactions[index].category == debtString ||transactions[index].time == iniTime )return Container();
+                children: List.generate(plannedPayments.length, (index) {
 
                   return Column(
 
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddEditTransactionPage(accounts: accounts,transaction: transactions[index]),
-                            ),
-                          );
+                          changePage(plannedPayments[index]);
                         },
 
                         child: Row(
@@ -142,10 +140,10 @@ class _HistoryPageState extends State<HistoryPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: transactions[index].isIncome==1?Colors.green:Colors.red,
+                                      color: Colors.grey,
                                     ),
                                     child: const Center(
-                                      child: Icon(Icons.attach_money,color: Colors.white ,)
+                                        child: Icon(Icons.attach_money,color: Colors.white ,)
                                     ),
                                   ),
                                   const SizedBox(width: 15),
@@ -156,7 +154,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          transactions[index].category,
+                                          plannedPayments[index].recurrence,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
@@ -164,22 +162,14 @@ class _HistoryPageState extends State<HistoryPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          transactions[index].time,
+                                          "Last Date: " +(plannedPayments[index].lastDate==iniTime?" ": plannedPayments[index].lastDate ),
                                           style: const TextStyle(
                                               fontSize: 10,
                                               color: black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
-                                        Text(
-                                          transactions[index].accountName ?? "Cash",
 
-                                          style: const TextStyle(
-                                              fontSize: 10,
-                                              color: black,
-                                              fontWeight: FontWeight.w500),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
 
 
                                       ],
@@ -194,12 +184,12 @@ class _HistoryPageState extends State<HistoryPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    transactions[index].amount.toString(),
+                                    plannedPayments[index].amount.toString(),
 
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: transactions[index].isIncome==1?Colors.green:Colors.red),
+                                        color: Colors.black),
                                   ),
                                 ],
                               ),
@@ -259,6 +249,19 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       ),
     );
+  }
+
+  void changePage(PlannedPayment plannedPayment) async {
+    TransactionModel t = await TransactionController.instance.getSingleAccount(plannedPayment.transactionId);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddEditPlannedPaymentPage(accounts: accounts,transaction: t,plannedPayment: plannedPayment),
+      ),
+    );
+
+
+
   }
 
 

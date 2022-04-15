@@ -63,6 +63,17 @@ CREATE TABLE Debt (
 
   )
 ''');
+    await db.execute('''
+CREATE TABLE PlannedPayment ( 
+  id $idType, 
+  transactionId $integerType,
+  date $textType,
+  lastDate $textType,
+  recurrence $textType,
+  amount $doubleType
+
+  )
+''');
 
 
   }

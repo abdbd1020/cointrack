@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/accountController.dart';
 import 'package:swe/controller/debtController.dart';
+import 'package:swe/controller/plannedPaymentController.dart';
+import 'package:swe/controller/timerController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/pages/accountsPage.dart';
 
@@ -57,6 +59,7 @@ class _HomePageState extends State<HomePage> {
 
 
     setState(() => isLoading = false);
+    await PlannedPaymentController.instance.check();
   }
 
   @override

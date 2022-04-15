@@ -43,7 +43,6 @@ class _DebtsPageState extends State<DebtsPage> {
     setState(() => isLoading = true);
     debt = await DebtController.instance.readAllRecords();
     accounts = await AccountController.instance.readAllAccounts();
-    print(debt[0].toString());
 
 
     setState(() => isLoading = false);
