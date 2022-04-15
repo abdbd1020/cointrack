@@ -136,7 +136,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: debt[index].isLend==0?Colors.green:Colors.red,
+                                      color: debt[index].isLend==1?Colors.green:Colors.red,
                                     ),
                                     child: const Center(
                                         child: Icon(Icons.attach_money,color: Colors.white ,)
@@ -150,7 +150,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          debt[index].isLend==1?"Me -> "+ debt[index].name:debt[index].name+" -> Me",
+                                          debt[index].isLend==0?"Me -> "+ debt[index].name:debt[index].name+" -> Me",
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
@@ -186,7 +186,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: debt[index].isLend==0?Colors.green:Colors.red),
+                                        color: debt[index].isLend==1?Colors.green:Colors.red),
                                   ),
                                 ],
                               ),
