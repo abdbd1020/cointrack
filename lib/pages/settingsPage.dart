@@ -80,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             SettingsTile.switchTile(
               onToggle: (value) {
-                isAllowPass = !value;
+                isAllowPass = value;
 
               },
 

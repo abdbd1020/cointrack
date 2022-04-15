@@ -14,6 +14,8 @@ import 'createEditAccountPage.dart';
 
 
 class AccountsPage extends StatefulWidget {
+  const AccountsPage({Key key}) : super(key: key);
+
   @override
   _AccountsPageState createState() => _AccountsPageState();
 }

@@ -33,7 +33,6 @@ dependencies:
   shared_preferences: ^2.0.13
   sqflite: ^2.0.2
   path: ^1.8.0
-  fluttertoast: ^7.1.1
   flutter_icons: ^1.1.0
   pie_chart: ^5.3.0
   settings_ui: ^2.0.2

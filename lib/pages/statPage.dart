@@ -7,6 +7,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swe/Misc/Strings.dart';
+import 'package:swe/controller/statisticsController.dart';
 import 'package:swe/model/transaction.dart';
 import '../Misc/chart.dart';
 import '../Misc/colors.dart';
@@ -29,8 +30,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   @override
   void initState() {
-    super.initState();
     refreshNotes();
+    super.initState();
   }
 
   Map<String, double> dataMap = {
@@ -39,21 +40,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Future refreshNotes() async {
     setState(() => isLoading = true);
 
-    transactionModels = await TransactionController.instance.readAllRecords();
+    dataMap = await StatisticsController.instance.getIncomeData();
+    print(dataMap);
 
-    int count = 0;
-    for(TransactionModel transactionModel in transactionModels){
-      if(count==30)break;
-      if(transactionModel.time==iniTime||transactionModel.category==debtString)continue;
-      if(dataMap[transactionModel.category]==null) {
-        dataMap.putIfAbsent(transactionModel.category, () => transactionModel.amount);
-      }
-      else
-        {
-          dataMap.update(transactionModel.category, (value) => value + transactionModel.amount);
-        }
-
-    }
 
 
     setState(() => isLoading = false);
@@ -165,14 +154,44 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      child: Container(
-                        width: (size.width - 20),
-                        height: 150,
-                        child: PieChart(dataMap:dataMap),
-                      ),
+                    FutureBuilder<Map<String,double>>(
+                      future: StatisticsController.instance.getIncomeData(),
+                      builder: ( context,snapshot) {
+                        switch (snapshot.connectionState) {
+
+                          case ConnectionState.waiting:
+                            return CircularProgressIndicator();
+                          case ConnectionState.done:
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            else{
+                              return Positioned(
+                                  bottom: 0,
+                                  child: Container(
+                                    width: (size.width - 20),
+                                    height: 150,
+                                    child: PieChart(dataMap:dataMap),
+                                  ));
+                            }
+
+                        }
+                      },
                     )
+                    // isLoading?Positioned(
+                    //   bottom: 0,
+                    //   child: Container(
+                    //     width: (size.width - 20),
+                    //     height: 150,
+                    //     child: PieChart(dataMap:dataMap),
+                    //   ),
+                    // ):const Positioned(
+                    //     right:120,
+                    //   top:80,
+                    //   left:120,
+                    //   bottom:80,
+                    //   child: CircularProgressIndicator(),
+                    // ),
                   ],
                 ),
               ),

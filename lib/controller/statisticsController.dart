@@ -19,9 +19,26 @@ class StatisticsController {
 
   StatisticsController._init();
 
-  Future getIncomeData() async {
+  Future <Map<String,double>> getIncomeData() async {
+    Map<String,double>dataMap={};
+    List<TransactionModel> transactionModels;
+    transactionModels = await TransactionController.instance.readAllRecords();
+
+    int count = 0;
+    for(TransactionModel transactionModel in transactionModels){
+      if(count==30)break;
+      if(transactionModel.time==iniTime||transactionModel.category==debtString)continue;
+      if(dataMap[transactionModel.category]==null) {
+        dataMap.putIfAbsent(transactionModel.category, () => transactionModel.amount);
+      }
+      else
+      {
+        dataMap.update(transactionModel.category, (value) => value + transactionModel.amount);
+      }
 
 
+    }
+    return dataMap;
 
 
       }

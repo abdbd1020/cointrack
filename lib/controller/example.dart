@@ -1,29 +1,93 @@
 
-import 'package:flutter/gestures.dart';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-
-
+import 'package:pie_chart/pie_chart.dart';
+import 'package:settings_ui/settings_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swe/Misc/Strings.dart';
+import 'package:swe/controller/statisticsController.dart';
+import 'package:swe/model/transaction.dart';
 import '../Misc/chart.dart';
 import '../Misc/colors.dart';
+import '../component/buttons/appBarBackButton.dart';
+import '../controller/transactionController.dart';
 import '../model/dayMonth.dart';
 
-class StatsPage extends StatefulWidget {
+
+
+class StatisticsPage extends StatefulWidget {
   @override
-  _StatsPageState createState() => _StatsPageState();
+  _StatisticsPageState createState() => _StatisticsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
-  int activeDay = 3;
+class _StatisticsPageState extends State<StatisticsPage> {
+  bool isAllowPass;
+  bool isLoading;
+  List<TransactionModel> transactionModels;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  bool showAvg = false;
+  @override
+  void initState() {
+    refreshNotes();
+    super.initState();
+  }
+
+  Map<String, double> dataMap = {
+  };
+
+  Future refreshNotes() async {
+    setState(() => isLoading = true);
+
+    dataMap = await StatisticsController.instance.getIncomeData();
+    print(dataMap);
+
+
+
+    setState(() => isLoading = false);
+
+  }
+
+
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void refreshUI() {
+    if (mounted) {
+      setState(() {
+        _scaffoldKey = GlobalKey<ScaffoldState>();
+      });
+    }
+  }
+  int activeDay = 3;
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        leading: AppBarBackButton(),
+        elevation: 1,
+        centerTitle: true,
+        title:  const Text(
+
+          'Settings',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       backgroundColor: white.withOpacity(0.95),
+
       body: getBody(),
+
+
     );
   }
+
+
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
@@ -45,92 +109,10 @@ class _StatsPageState extends State<StatsPage> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(color: white, boxShadow: [
-              BoxShadow(
-                color: grey.withOpacity(0.01),
-                spreadRadius: 10,
-                blurRadius: 3,
-                // changes position of shadow
-              ),
-            ]),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 60, right: 20, left: 20, bottom: 25),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Stats",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: black),
-                      ),
-                      Icon(AntDesign.search1)
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(months.length, (index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              activeDay = index;
-                            });
-                          },
-                          child: Container(
-                            width: (MediaQuery.of(context).size.width - 40) / 6,
-                            child: Column(
-                              children: [
-                                Text(
-                                  months[index]['label'],
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: activeDay == index
-                                          ? primary
-                                          : black.withOpacity(0.02),
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                          color: activeDay == index
-                                              ? primary
-                                              : black.withOpacity(0.1))),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 12, right: 12, top: 7, bottom: 7),
-                                    child: Text(
-                                      months[index]['day'],
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                          color: activeDay == index
-                                              ? white
-                                              : black),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }))
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
@@ -168,24 +150,48 @@ class _StatsPageState extends State<StatsPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            "\$2446.90",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          )
+
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      child: Container(
-                        width: (size.width - 20),
-                        height: 150,
+                    FutureBuilder<Map<String,double>>(
+                      future: StatisticsController.instance.getIncomeData(),
+                      builder: ( context,snapshot) {
+                        switch (snapshot.connectionState) {
 
-                      ),
+                          case ConnectionState.waiting:
+                            return CircularProgressIndicator();
+                          case ConnectionState.done:
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            else{
+                              return Positioned(
+                                  bottom: 0,
+                                  child: Container(
+                                    width: (size.width - 20),
+                                    height: 150,
+                                    child: PieChart(dataMap:dataMap),
+                                  ));
+                            }
+
+                        }
+                      },
                     )
+                    // isLoading?Positioned(
+                    //   bottom: 0,
+                    //   child: Container(
+                    //     width: (size.width - 20),
+                    //     height: 150,
+                    //     child: PieChart(dataMap:dataMap),
+                    //   ),
+                    // ):const Positioned(
+                    //     right:120,
+                    //   top:80,
+                    //   left:120,
+                    //   bottom:80,
+                    //   child: CircularProgressIndicator(),
+                    // ),
                   ],
                 ),
               ),
@@ -261,4 +267,6 @@ class _StatsPageState extends State<StatsPage> {
       ),
     );
   }
+
+
 }
