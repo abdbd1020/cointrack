@@ -14,36 +14,151 @@ import '../model/plannedPaymentModel.dart';
 class StatisticsController {
 
   static final StatisticsController instance = StatisticsController._init();
-  static bool isChecked = false;
+
+
+
+
 
 
   StatisticsController._init();
 
+  setRecords() async {
+
+  }
+
   Future <Map<String,double>> getIncomeData() async {
-    Map<String,double>dataMap={};
-    List<TransactionModel> transactionModels;
+    Map<String,double>inComeDataMap={};
+    List<TransactionModel> transactionModels = [];
     transactionModels = await TransactionController.instance.readAllRecords();
-
     int count = 0;
+
     for(TransactionModel transactionModel in transactionModels){
-      if(count==30)break;
-      if(transactionModel.time==iniTime||transactionModel.category==debtString)continue;
-      if(dataMap[transactionModel.category]==null) {
-        dataMap.putIfAbsent(transactionModel.category, () => transactionModel.amount);
+
+      if(count==100)break;
+      if(transactionModel.time==iniTime||transactionModel.category==debtString) {
+
+        continue;
       }
-      else
-      {
-        dataMap.update(transactionModel.category, (value) => value + transactionModel.amount);
+      else{
+        count++;
       }
 
+      if(transactionModel.isIncome==1){
+        if(inComeDataMap[transactionModel.category]==null) {
+          inComeDataMap.putIfAbsent(transactionModel.category, () => transactionModel.amount);
+        }
+        else
+        {
+
+          inComeDataMap.update(transactionModel.category, (value) => value + transactionModel.amount);
+        }
+      }
+
+    }
+
+
+    return inComeDataMap;
+
+
+      }
+  Future <Map<String,double>> getExpenseData() async {
+    Map<String,double>dataMap={};
+
+
+    List<TransactionModel> transactionModels = [];
+    transactionModels = await TransactionController.instance.readAllRecords();
+    int count = 0;
+
+    for(TransactionModel transactionModel in transactionModels){
+
+      if(count==100)break;
+      if(transactionModel.time==iniTime||transactionModel.category==debtString) {
+
+        continue;
+      }
+      else {
+        count++;
+      }
+
+      if(transactionModel.isIncome==0){
+        if(dataMap[transactionModel.category]==null) {
+          dataMap.putIfAbsent(transactionModel.category, () => transactionModel.amount);
+        }
+        else
+        {
+          dataMap.update(transactionModel.category, (value) => value + transactionModel.amount);
+        }
+      }
 
     }
     return dataMap;
 
 
+  }
+  Future<double> getTotalExpense() async {
+    double netExpense = 0;
+    List<TransactionModel> transactionModels = [];
+    transactionModels = await TransactionController.instance.readAllRecords();
+    int count = 0;
+
+    for(TransactionModel transactionModel in transactionModels){
+
+      if(count==100)break;
+      if(transactionModel.time==iniTime||transactionModel.category==debtString) {
+
+        continue;
+      }
+      else {
+        count++;
       }
 
+      if(transactionModel.isIncome==0){
+        netExpense += transactionModel.amount;
+      }
+
+    }
+
+
+    return netExpense;
+
+
   }
+  Future<double> getTotalIncome() async {
+    double netIncome = 0;
+    List<TransactionModel> transactionModels = [];
+    transactionModels = await TransactionController.instance.readAllRecords();
+    int count = 0;
+
+    for(TransactionModel transactionModel in transactionModels){
+
+      if(count==100)break;
+      if(transactionModel.time==iniTime||transactionModel.category==debtString) {
+        continue;
+      }
+      else {
+        count++;
+      }
+
+
+      if(transactionModel.isIncome==1){
+          netIncome += transactionModel.amount;
+
+
+        }
+
+      }
+
+
+    return netIncome;
+
+    }
+
+
+
+
+  }
+
+
 
 
 
