@@ -40,7 +40,6 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() => isLoading = true);
     transactions = await TransactionController.instance.readAllRecords();
     accounts = await AccountController.instance.readAllAccounts();
-    print(transactions[0].toString());
 
 
     setState(() => isLoading = false);
@@ -78,9 +77,10 @@ class _HistoryPageState extends State<HistoryPage> {
       backgroundColor: white.withOpacity(0.95),
 
       body: getBody(),
-      floatingActionButton: SizedBox(
-        height: 80.0,
-        width: 80.0,
+      floatingActionButton: Container(
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(onPressed: (){
             Navigator.push(

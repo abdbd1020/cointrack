@@ -93,17 +93,6 @@ Route buildRouter(RouteSettings settings) {
   );
 }
 
-//void openMerchantPage(BuildContext context, MetaMerchant merchant) {
-//  Navigator.of(context).pushNamed("/merchant_page", arguments: merchant);
-//}
-//
-//void openProductPage(BuildContext context, Int64 productId) {
-//  Navigator.of(context).pushNamed("/product_page", arguments: productId);
-//}
-//
-//void openOrderPage(BuildContext context, Int64 orderId) {
-//  Navigator.of(context).pushNamed('/order/${orderId}');
-//}
 
 class FadeInRoute<T> extends MaterialPageRoute<T> {
   bool disableAnimation;
@@ -129,18 +118,4 @@ class FadeInRoute<T> extends MaterialPageRoute<T> {
   }
 }
 
-/*
 
-* Navigating System
-* - Navigator.of(context).pushNamed('/book_valet');
-* - Navigator.of(context).pushNamedAndRemoveUntil(
-         '/', (Route<dynamic> route) => false);
-  - Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BookingDetailsPage(
-                      singleBookingData: singleBookingData,
-                      bookingDataList: bookingDataList,
-                    )),
-          );
- */

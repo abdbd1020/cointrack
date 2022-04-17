@@ -11,7 +11,6 @@ import '../component/buttons/appBarBackButton.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
 import '../model/debt.dart';
-import 'accountsPage.dart';
 import 'homePage.dart';
 
 
@@ -104,13 +103,14 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(15)),
 
-        height: 80.0,
-        width: 80.0,
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(onPressed: addEditDebt,
             child: const Icon( Icons.arrow_forward,
               color: white,),
-            backgroundColor: Colors.red,),
+            backgroundColor: Colors.green,),
         ),
 
 

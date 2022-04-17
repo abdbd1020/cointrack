@@ -3,22 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/accountController.dart';
-import 'package:swe/controller/example.dart';
 import 'package:swe/controller/plannedPaymentController.dart';
 import 'package:swe/model/account.dart';
 import 'package:swe/model/transaction.dart';
 import 'package:swe/pages/accountsPage.dart';
 import 'package:swe/pages/statPage.dart';
 import '../Misc/colors.dart';
-import '../component/card/accountCard.dart';
 import '../component/commonUI.dart';
 import '../component/drawerUI.dart';
-import '../component/buttons/generalActionButton.dart';
 import '../controller/statisticsController.dart';
 import '../controller/transactionController.dart';
 import 'addEditTransactionPage.dart';
 import 'historyPage.dart';
-import 'loginPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage() : super();
@@ -50,25 +46,18 @@ class _HomePageState extends State<HomePage> {
     transactions = await TransactionController.instance.readAllRecords();
     int count = 0;
     int index = 0;
-    for(index = 0;index<transactions.length;index++){
-      if (transactions[transactions.length - index - 1]
-          .category ==
-          debtString ||
-          transactions[transactions.length - index - 1]
-              .time ==
-              iniTime) {
+    for (index = 0; index < transactions.length; index++) {
+      if (transactions[transactions.length - index - 1].category ==
+              debtString ||
+          transactions[transactions.length - index - 1].time == iniTime) {
         continue;
-      }
-      else{
+      } else {
         finalTransactions.add(transactions[transactions.length - index - 1]);
         count++;
       }
-      if(count==3)break;
+      if (count == 3) break;
     }
 
-
-
-    int a = await TransactionController.instance.maxItem();
     dataMap = await StatisticsController.instance.getAllData();
 
     if (accounts.isEmpty) {
@@ -98,6 +87,7 @@ class _HomePageState extends State<HomePage> {
       key: _scaffoldKey,
       drawer: MainDrawer(),
       appBar: AppBar(
+        backgroundColor: Colors.green,
         elevation: 1,
         centerTitle: true,
         title: const Text(
@@ -107,8 +97,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: buildBody(),
       floatingActionButton: Container(
-        height: 80.0,
-        width: 80.0,
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
@@ -129,14 +120,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildBody() {
-
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Column(
         children: [
-          const SizedBox(
-            height: 5,
-          ),
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
@@ -158,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                        top: 10,
+                        top: 5,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,8 +158,8 @@ class _HomePageState extends State<HomePage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black),
+                                  fontSize: 26,
+                                  color: Color(0xff495057)),
                             ),
                           ),
                           SizedBox(
@@ -189,12 +177,11 @@ class _HomePageState extends State<HomePage> {
                       return Column(
                         children: [
                           Container(
-
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(0,7,0,7),
                             decoration: BoxDecoration(
-                              color: Colors.black12,
+                              color: Colors.green,
                               border: Border.all(
-                                color: Colors.grey, // red as border color
+                                color: Colors.lightGreen, // red as border color
                               ),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15)),
@@ -218,8 +205,8 @@ class _HomePageState extends State<HomePage> {
                                             Text(
                                               accounts[index].name,
                                               style: const TextStyle(
-                                                  fontSize: 15,
-                                                  color: black,
+                                                  fontSize: 20,
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.w500),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -229,7 +216,8 @@ class _HomePageState extends State<HomePage> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
+                                const Spacer(),
+                                Container(
                                   // width: (size.width - 40) * 0.3,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -238,12 +226,14 @@ class _HomePageState extends State<HomePage> {
                                         accounts[index].amount.toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            fontSize: 15,
-                                            color: black),
+                                            fontSize: 20,
+                                            color: Colors.white),
                                       ),
                                     ],
                                   ),
-                                )
+                                ),
+                                const SizedBox(width: 12,),
+
                               ],
                             ),
                           ),
@@ -258,7 +248,6 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Spacer(),
                         InkWell(
-
                           onTap: () {
                             Navigator.push(
                               context,
@@ -268,21 +257,25 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           child: Container(
-
                             padding: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.green, // red as border color
                               ),
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20)),
+                                  BorderRadius.all(Radius.circular(20)),
                             ),
                             alignment: Alignment.center,
                             child: Row(
                               children: const [
                                 SizedBox(width: 15),
-                                Icon(Icons.settings,color: Colors.green,),
-                                SizedBox(width: 5,),
+                                Icon(
+                                  Icons.settings,
+                                  color: Colors.green,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
                                 Text(
                                   "Manage Accounts",
                                   textAlign: TextAlign.center,
@@ -311,7 +304,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
               width: double.infinity,
-              height: 350,
+              height: 380,
               decoration: BoxDecoration(
                   color: white,
                   borderRadius: BorderRadius.circular(12),
@@ -341,142 +334,163 @@ class _HomePageState extends State<HomePage> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 26,
                                   color: Colors.black),
                             ),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
-                          Column(
-                              children: List.generate(
-                                  finalTransactions == null
-                                      ? 0
-                                      :  finalTransactions.length, (index) {
-                         
-
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      //   width: (size.width - 40) * 0.7,
-                                      child: Row(
+                          transactions.isEmpty
+                              ? Column(
+                                children: const [
+                                  SizedBox(height: 120,),
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "No Data to Show",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                ],
+                              )
+                              : Column(
+                                  children: List.generate(
+                                      finalTransactions == null
+                                          ? 0
+                                          : finalTransactions.length, (index) {
+                                  return Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: finalTransactions[index]
-                                                          .isIncome ==
-                                                      1
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                            child: const Center(
-                                                child: Icon(
-                                              Icons.attach_money,
-                                              color: Colors.white,
-                                            )),
-                                          ),
-                                          const SizedBox(width: 15),
                                           SizedBox(
-                                            //width: (size.width - 90) * 0.5,
-                                            child: Column(
+                                            //   width: (size.width - 40) * 0.7,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 50,
+                                                  height: 50,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color:
+                                                        finalTransactions[index]
+                                                                    .isIncome ==
+                                                                1
+                                                            ? Colors.green
+                                                            : Colors.red,
+                                                  ),
+                                                  child: const Center(
+                                                      child: Icon(
+                                                    Icons.attach_money,
+                                                    color: Colors.white,
+                                                  )),
+                                                ),
+                                                const SizedBox(width: 15),
+                                                SizedBox(
+                                                  //width: (size.width - 90) * 0.5,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        finalTransactions[index]
+                                                            .category,
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            color: black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Text(
+                                                        finalTransactions[index]
+                                                            .time,
+                                                        style: const TextStyle(
+                                                            fontSize: 10,
+                                                            color: black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Text(
+                                                        finalTransactions[index]
+                                                                .accountName ??
+                                                            "Cash",
+                                                        style: const TextStyle(
+                                                            fontSize: 10,
+                                                            color: black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            // width: (size.width - 40) * 0.3,
+                                            child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 Text(
-                                                  finalTransactions[
-                                                          index]
-                                                      .category,
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      color: black,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Text(
-                                                  finalTransactions[
-                                                          index]
-                                                      .time,
-                                                  style: const TextStyle(
-                                                      fontSize: 10,
-                                                      color: black,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Text(
                                                   finalTransactions[index]
-                                                          .accountName ??
-                                                      "Cash",
-                                                  style: const TextStyle(
-                                                      fontSize: 10,
-                                                      color: black,
+                                                      .amount
+                                                      .toString(),
+                                                  style: TextStyle(
                                                       fontWeight:
-                                                          FontWeight.w500),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                                          FontWeight.w600,
+                                                      fontSize: 15,
+                                                      color: transactions[transactions
+                                                                          .length -
+                                                                      index -
+                                                                      1]
+                                                                  .isIncome ==
+                                                              1
+                                                          ? Colors.green
+                                                          : Colors.red),
                                                 ),
                                               ],
                                             ),
                                           )
                                         ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      // width: (size.width - 40) * 0.3,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            finalTransactions[index]
-                                                .amount
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15,
-                                                color: transactions[transactions
-                                                                    .length -
-                                                                index -
-                                                                1]
-                                                            .isIncome ==
-                                                        1
-                                                    ? Colors.green
-                                                    : Colors.red),
-                                          ),
-                                        ],
+                                      const Padding(
+                                        padding:
+                                            EdgeInsets.only(left: 65, top: 8),
+                                        child: Divider(
+                                          thickness: 0.8,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 65, top: 8),
-                                  child: Divider(
-                                    thickness: 0.8,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                              ],
-                            );
-                          })),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  );
+                                })),
                           SizedBox(
                             height: 20,
                           ),
                         ],
                       ),
                     ),
-                    InkWell(
+                    transactions.isEmpty?Container():InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -488,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         alignment: Alignment.bottomLeft,
                         child: Row(
-                          children: [
+                          children: const [
                             SizedBox(width: 15),
                             Text(
                               "Show More",
@@ -537,7 +551,7 @@ class _HomePageState extends State<HomePage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 26,
                             color: Colors.black),
                       ),
                     ),
@@ -556,7 +570,7 @@ class _HomePageState extends State<HomePage> {
                               if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else {
-                                if(dataMap.isEmpty) {
+                                if (dataMap.isEmpty) {
                                   return const Align(
                                     alignment: Alignment.center,
                                     child: Text(
@@ -568,14 +582,13 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black),
                                     ),
                                   );
-                                }
-                                else {
+                                } else {
                                   return Container(
-                                    child: Container(
-                                  // width: (size.width - 20),
-                                  height: 150,
-                                  child: PieChart(dataMap: dataMap),
-                                ));
+                                      child: Container(
+                                    // width: (size.width - 20),
+                                    height: 150,
+                                    child: PieChart(dataMap: dataMap),
+                                  ));
                                 }
                               }
                           }
@@ -583,6 +596,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
+                    dataMap.isEmpty?Container():
                     InkWell(
                       onTap: () {
                         Navigator.push(

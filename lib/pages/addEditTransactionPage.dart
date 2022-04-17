@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
@@ -10,7 +9,6 @@ import '../Misc/colors.dart';
 import '../component/buttons/appBarBackButton.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
-import 'accountsPage.dart';
 import 'homePage.dart';
 
 class AddEditTransactionPage extends StatefulWidget {
@@ -99,8 +97,9 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
       floatingActionButton: Container(
         decoration: BoxDecoration(
             color: Colors.transparent, borderRadius: BorderRadius.circular(15)),
-        height: 80.0,
-        width: 80.0,
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: addEditTransaction,
@@ -108,7 +107,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
               Icons.arrow_forward,
               color: white,
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.green,
           ),
         ),
       ),
@@ -390,7 +389,7 @@ class _AddEditTransactionPage extends State<AddEditTransactionPage> {
     DateTime now = DateTime.now();
     DateFormat formatter = DateFormat('HH:mm');
     String formattedTime = formatter.format(now);
-    formattedTime = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}" + formattedTime;
+    formattedTime = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}" +" "+ formattedTime;
 
     int isIncomeInt = 0;
     if (dropdownTypeValue == incomeString) {

@@ -46,6 +46,14 @@ class _AppSate extends State<App> {
   Widget build(BuildContext context) {
     // start app
     return MaterialApp(
+      theme:  ThemeData(
+        primarySwatch: Colors.green,
+        primaryTextTheme: const TextTheme(
+            headline6: TextStyle(
+                color: Color(0xff495057)
+            )
+        )
+    ),
       debugShowCheckedModeBanner: false,
       home: isPass ?LoginPage(): HomePage() ,
     );

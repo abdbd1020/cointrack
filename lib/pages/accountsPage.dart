@@ -2,13 +2,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
 import '../Misc/colors.dart';
 import '../component/drawerUI.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
-import '../model/dayMonth.dart';
 import 'createEditAccountPage.dart';
 
 
@@ -208,37 +205,7 @@ class _AccountsPageState extends State<AccountsPage> {
           const SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black.withOpacity(0.4),
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\$1780.00",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          )
+
         ],
       ),
     );

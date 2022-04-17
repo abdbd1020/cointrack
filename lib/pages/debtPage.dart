@@ -2,8 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:swe/Misc/Strings.dart';
+
 import 'package:swe/controller/debtController.dart';
 import 'package:swe/controller/transactionController.dart';
 import 'package:swe/model/transaction.dart';
@@ -14,8 +13,6 @@ import '../component/drawerUI.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
 import '../model/debt.dart';
-import 'addEditTransactionPage.dart';
-import 'createEditAccountPage.dart';
 
 
 class DebtsPage extends StatefulWidget {
@@ -80,9 +77,10 @@ class _DebtsPageState extends State<DebtsPage> {
       backgroundColor: white.withOpacity(0.95),
 
       body: getBody(),
-      floatingActionButton: SizedBox(
-        height: 80.0,
-        width: 80.0,
+      floatingActionButton: Container(
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(onPressed: (){
             Navigator.push(

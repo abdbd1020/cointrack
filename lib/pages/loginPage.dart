@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+                  color: Colors.green, borderRadius: BorderRadius.circular(20)),
               child: FlatButton(
                 onPressed: () {
                   checkVerification();

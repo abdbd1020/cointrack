@@ -108,8 +108,9 @@ class _AddEditPlannedPaymentPage extends State<AddEditPlannedPaymentPage> {
       floatingActionButton: Container(
         decoration: BoxDecoration(
             color: Colors.transparent, borderRadius: BorderRadius.circular(15)),
-        height: 80.0,
-        width: 80.0,
+        margin: const EdgeInsets.fromLTRB(0,0,10,20),
+        height: 65.0,
+        width: 65.0,
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: addEditTransaction,
@@ -117,7 +118,7 @@ class _AddEditPlannedPaymentPage extends State<AddEditPlannedPaymentPage> {
               Icons.arrow_forward,
               color: white,
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.green,
           ),
         ),
       ),
