@@ -111,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Column(
 
                 children: List.generate(transactions.length, (index) {
-                  if(transactions[index].category == debtString ||transactions[index].time == iniTime )return Container();
+                  if(transactions[transactions.length-index-1].category == debtString ||transactions[transactions.length-index-1].time == iniTime )return Container();
 
                   return Column(
 
@@ -121,7 +121,7 @@ class _HistoryPageState extends State<HistoryPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddEditTransactionPage(accounts: accounts,transaction: transactions[index]),
+                              builder: (context) => AddEditTransactionPage(accounts: accounts,transaction: transactions[transactions.length-index-1]),
                             ),
                           );
                         },
@@ -140,7 +140,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: transactions[index].isIncome==1?Colors.green:Colors.red,
+                                      color: transactions[transactions.length-index-1].isIncome==1?Colors.green:Colors.red,
                                     ),
                                     child: const Center(
                                       child: Icon(Icons.attach_money,color: Colors.white ,)
@@ -154,7 +154,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          transactions[index].category,
+                                          transactions[transactions.length-index-1].category,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
@@ -162,7 +162,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          transactions[index].time,
+                                          transactions[transactions.length-index-1].time,
                                           style: const TextStyle(
                                               fontSize: 10,
                                               color: black,
@@ -170,7 +170,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          transactions[index].accountName ?? "Cash",
+                                          transactions[transactions.length-index-1].accountName ?? "Cash",
 
                                           style: const TextStyle(
                                               fontSize: 10,
@@ -192,12 +192,12 @@ class _HistoryPageState extends State<HistoryPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    transactions[index].amount.toString(),
+                                    transactions[transactions.length-index-1].amount.toString(),
 
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: transactions[index].isIncome==1?Colors.green:Colors.red),
+                                        color: transactions[transactions.length-index-1].isIncome==1?Colors.green:Colors.red),
                                   ),
                                 ],
                               ),

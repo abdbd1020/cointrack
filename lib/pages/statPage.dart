@@ -18,6 +18,8 @@ import '../model/dayMonth.dart';
 
 
 class StatisticsPage extends StatefulWidget {
+  const StatisticsPage({Key key}) : super(key: key);
+
   @override
   _StatisticsPageState createState() => _StatisticsPageState();
 }
@@ -38,6 +40,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
   };
   Map<String, double> expenseDataMap = {
   };
+  Map<String, double> allDataMap = {
+  };
   double totalIncome = 0;
   double totalExpense = 0;
 
@@ -48,9 +52,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
     expenseDataMap = await StatisticsController.instance.getExpenseData();
     totalIncome = await StatisticsController.instance.getTotalIncome();
     totalExpense = await StatisticsController.instance.getTotalExpense();
+    allDataMap = await StatisticsController.instance.getAllData();
 
 
-    print(dataMap);
+
 
 
 
@@ -318,13 +323,27 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               return Text('Error: ${snapshot.error}');
                             }
                             else{
-                              return Positioned(
+                              if(dataMap.isEmpty) {
+                                return const Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "No Data to Show",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.black),
+                                ),
+                              );
+                              } else {
+                                return Positioned(
                                   bottom: 0,
                                   child: Container(
                                     width: (size.width - 20),
                                     height: 150,
                                     child: PieChart(dataMap:dataMap),
                                   ));
+                              }
                             }
 
 
@@ -396,13 +415,29 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               return Text('Error: ${snapshot.error}');
                             }
                             else{
-                              return Positioned(
+                              if(expenseDataMap.isEmpty) {
+                                return const Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "No Data to Show",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  ),
+                                );
+                              }
+                              else {
+
+                                return Positioned(
                                   bottom: 0,
                                   child: Container(
                                     width: (size.width - 20),
                                     height: 150,
                                     child: PieChart(dataMap:expenseDataMap),
                                   ));
+                              }
                             }
 
                         }
@@ -449,7 +484,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            "Income",
+                            "ALl Transaction",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 13,
@@ -463,7 +498,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
                     ),
                     FutureBuilder<Map<String,double>>(
-                      future: StatisticsController.instance.getIncomeData(),
+                      future: StatisticsController.instance.getAllData(),
                       builder: ( context,snapshot) {
                         switch (snapshot.connectionState) {
 
@@ -474,13 +509,28 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               return Text('Error: ${snapshot.error}');
                             }
                             else{
-                              return Positioned(
+                              if(allDataMap.isEmpty) {
+                                return const Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "No Data to Show",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.black),
+                                  ),
+                                );
+                              }
+                              else {
+                                return Positioned(
                                   bottom: 0,
                                   child: Container(
                                     width: (size.width - 20),
                                     height: 150,
-                                    child: PieChart(dataMap:dataMap),
+                                    child: PieChart(dataMap:allDataMap),
                                   ));
+                              }
                             }
 
 

@@ -19,7 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    passwordController.text = "";
+
     super.initState();
     refreshNotes();
   }
@@ -32,6 +32,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     isAllowPass = sharedPreferences.getBool("isPass");
+    passwordController.text = sharedPreferences.getString("Password") ?? "";
+
     setState(() => isLoading = false);
   }
 
@@ -144,18 +146,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       color: Colors.black),
                 ),
               ),
-              TextField(
+              TextFormField(
                 controller: passwordController,
                 enabled: isAllowPass?true:false,
                 obscureText: true,
                 enableSuggestions: false,
                 autocorrect: false,
                 cursorColor: black,
+                
+
                 style: const TextStyle(
                     fontSize: 17,
 
                     color: black),
                 decoration: const InputDecoration(
+                  
                   contentPadding: EdgeInsets.fromLTRB(18, 0, 0, 0),
                     hintText: "Enter Password",
                   border: InputBorder.none,
