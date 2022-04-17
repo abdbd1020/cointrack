@@ -13,6 +13,7 @@ import '../component/buttons/generalActionButton.dart';
 import '../controller/transactionController.dart';
 import 'addEditTransactionPage.dart';
 import 'historyPage.dart';
+import 'loginPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage() : super();
@@ -250,7 +251,7 @@ class _HomePageState extends State<HomePage> {
       callBackOnSubmit: (){
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HistoryPage()),
+          MaterialPageRoute(builder: (context) => LoginPage()),
         );
       },
     );

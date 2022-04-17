@@ -22,7 +22,7 @@ final Map<String, RouterMethod> _definitions = {
     return MaterialPageRoute(
       settings: settings,
       builder: (context) {
-        return const LoginPage();
+        return  LoginPage();
       },
     );
   },

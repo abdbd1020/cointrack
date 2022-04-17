@@ -10,6 +10,8 @@ import 'package:swe/controller/accountController.dart';
 
 
 class App extends StatefulWidget {
+  const App({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _AppSate();
@@ -17,7 +19,7 @@ class App extends StatefulWidget {
 }
 
 class _AppSate extends State<App> {
-  bool isLogin = true;
+  bool isPass = false;
   final GlobalKey<NavigatorState> navigatorKey =
   GlobalKey<NavigatorState>(debugLabel: "navigator");
 
@@ -30,13 +32,11 @@ class _AppSate extends State<App> {
 
   void initProject() async {
     final prefs = await SharedPreferences.getInstance();
-    if(prefs.getBool('isLoggedIn')==null){
-      await prefs.setBool('isLoggedIn', true);
-    }
+
     if(prefs.getBool('isPass')==null){
       await prefs.setBool('isPass', false);
     }
-    isLogin = prefs.getBool('isLogin');
+    isPass = prefs.getBool('isPass');
     WidgetsFlutterBinding.ensureInitialized();
 
   }
@@ -47,7 +47,7 @@ class _AppSate extends State<App> {
     // start app
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: isLogin ? HomePage() : LoginPage(),
+      home: isPass ?LoginPage(): HomePage() ,
     );
   }
 

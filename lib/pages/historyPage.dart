@@ -71,7 +71,7 @@ class _HistoryPageState extends State<HistoryPage> {
         centerTitle: true,
         title:  const Text(
 
-          'Transaction',
+          'Transactions',
           style: TextStyle(color: Colors.white),
         ),
       ),
