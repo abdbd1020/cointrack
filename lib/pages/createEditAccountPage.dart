@@ -278,7 +278,8 @@ class _CreateEditAccountPage extends State<CreateEditAccountPage> {
       content: Text("Successful"),
       duration: Duration(milliseconds: 500),
     ));
-    Navigator.of(context).pop();
+    await Future.delayed(const Duration(seconds: 1), (){});
+    //Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AccountsPage()),

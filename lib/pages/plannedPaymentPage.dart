@@ -106,7 +106,10 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return plannedPayments.isEmpty?Container(
+      alignment: Alignment.center,
+      child: const Text("NO Data to Show",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+    ): SingleChildScrollView(
       child: Column(
         children: [
 
@@ -123,7 +126,7 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
                     children: [
                       InkWell(
                         onTap: () {
-                          changePage(plannedPayments[index]);
+                          changePage(plannedPayments[plannedPayments.length-index-1]);
                         },
 
                         child: Row(
@@ -154,7 +157,7 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          plannedPayments[index].recurrence,
+                                          plannedPayments[plannedPayments.length-index-1].recurrence,
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
@@ -162,7 +165,7 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
-                                          "Last Date: " +(plannedPayments[index].lastDate==iniTime?" ": plannedPayments[index].lastDate ),
+                                          "Last Date: " +(plannedPayments[plannedPayments.length-index-1].lastDate==iniTime?" ": plannedPayments[plannedPayments.length-index-1].lastDate ),
                                           style: const TextStyle(
                                               fontSize: 10,
                                               color: black,
@@ -184,7 +187,7 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    plannedPayments[index].amount.toString(),
+                                    plannedPayments[plannedPayments.length-index-1].amount.toString(),
 
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
@@ -215,37 +218,7 @@ class _PlannedPaymentPageState extends State<PlannedPaymentPage> {
           const SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black.withOpacity(0.4),
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\$1780.00",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          )
+
         ],
       ),
     );

@@ -100,7 +100,10 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return transactions.isEmpty?Container(
+      alignment: Alignment.center,
+      child: const Text("NO Data to Show",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+    ): SingleChildScrollView(
       child: Column(
         children: [
 
@@ -223,37 +226,7 @@ class _HistoryPageState extends State<HistoryPage> {
           const SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black.withOpacity(0.4),
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\$1780.00",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          )
+
         ],
       ),
     );

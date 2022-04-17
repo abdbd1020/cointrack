@@ -435,7 +435,7 @@ class _AddEditDebtPage extends State<AddEditDebtPage> {
       int temp =  await DebtController.instance.maxItem();
       debtId = temp==null?0:temp+1;
       int temp1 = await TransactionController.instance.maxItem();
-      transactionId = temp1==null?0:temp+1;
+      transactionId = temp1==null?0:temp1+1;
     }
 
     DateTime now = DateTime.now();

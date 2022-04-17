@@ -102,7 +102,10 @@ class _DebtsPageState extends State<DebtsPage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return debt.isEmpty?Container(
+      alignment: Alignment.center,
+      child: const Text("NO Data to Show",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+    ): SingleChildScrollView(
       child: Column(
         children: [
 
@@ -118,7 +121,7 @@ class _DebtsPageState extends State<DebtsPage> {
 
                     children: [
                       InkWell(
-                        onTap:(){ changeToAddDebtPage(debt[index].transactionId,debt[index].id);
+                        onTap:(){ changeToAddDebtPage(debt[debt.length-index-1].transactionId,debt[debt.length-index-1].id);
                         },
 
                         child: Row(
@@ -135,7 +138,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: debt[index].isLend==1?Colors.green:Colors.red,
+                                      color: debt[debt.length-index-1].isLend==1?Colors.green:Colors.red,
                                     ),
                                     child: const Center(
                                         child: Icon(Icons.attach_money,color: Colors.white ,)
@@ -149,7 +152,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          debt[index].isLend==0?"Me -> "+ debt[index].name:debt[index].name+" -> Me",
+                                          debt[debt.length-index-1].isLend==0?"Me -> "+ debt[debt.length-index-1].name:debt[debt.length-index-1].name+" -> Me",
                                           style: const TextStyle(
                                               fontSize: 15,
                                               color: black,
@@ -158,7 +161,7 @@ class _DebtsPageState extends State<DebtsPage> {
                                         ),
                                         SizedBox(height: 2,),
                                         Text(
-                                          "Due date -> "+ debt[index].dueDate ,
+                                          "Due date -> "+ debt[debt.length-index-1].dueDate ,
 
                                           style: const TextStyle(
                                               fontSize: 13,
@@ -180,12 +183,12 @@ class _DebtsPageState extends State<DebtsPage> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    debt[index].amount.toString(),
+                                    debt[debt.length-index-1].amount.toString(),
 
                                     style:  TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 15,
-                                        color: debt[index].isLend==1?Colors.green:Colors.red),
+                                        color: debt[debt.length-index-1].isLend==1?Colors.green:Colors.red),
                                   ),
                                 ],
                               ),
@@ -211,37 +214,7 @@ class _DebtsPageState extends State<DebtsPage> {
           const SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black.withOpacity(0.4),
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\$1780.00",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          )
+
         ],
       ),
     );

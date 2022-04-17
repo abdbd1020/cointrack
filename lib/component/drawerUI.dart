@@ -44,7 +44,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.directions_car,
+                    Icons.home,
                     color: Colors.black,
                   ),
                   onTap: () {
@@ -58,7 +58,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.directions_car,
+                    Icons.history,
                     color: Colors.black,
                   ),
                   // onTap: () {
@@ -76,7 +76,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.pageview_rounded,
+                    Icons.bar_chart,
                     color: Colors.black,
                   ),
                   // onTap: () {
@@ -94,7 +94,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.all_out,
+                    Icons.money,
                     color: Colors.black,
                   ),
                   onTap: () {
@@ -109,7 +109,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.all_out,
+                    Icons.access_time,
                     color: Colors.black,
                   ),
                   onTap: () {
@@ -124,7 +124,7 @@ class MainDrawer extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   leading: const Icon(
-                    Icons.all_out,
+                    Icons.settings,
                     color: Colors.black,
                   ),
                   onTap: () {
