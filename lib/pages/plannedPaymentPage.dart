@@ -2,7 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
 import 'package:swe/Misc/Strings.dart';
 import 'package:swe/controller/timerController.dart';
 import 'package:swe/controller/transactionController.dart';
@@ -14,10 +14,6 @@ import '../Misc/colors.dart';
 import '../component/drawerUI.dart';
 import '../controller/accountController.dart';
 import '../model/account.dart';
-import '../model/daily.dart';
-import '../model/dayMonth.dart';
-import 'addEditTransactionPage.dart';
-import 'createEditAccountPage.dart';
 
 
 class PlannedPaymentPage extends StatefulWidget {

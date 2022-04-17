@@ -2,18 +2,13 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+
 import 'package:pie_chart/pie_chart.dart';
-import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swe/Misc/Strings.dart';
+
 import 'package:swe/controller/statisticsController.dart';
 import 'package:swe/model/transaction.dart';
-import '../Misc/chart.dart';
 import '../Misc/colors.dart';
 import '../component/buttons/appBarBackButton.dart';
-import '../controller/transactionController.dart';
-import '../model/dayMonth.dart';
 
 
 
